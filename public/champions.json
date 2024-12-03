@@ -1,0 +1,847 @@
+[
+  {
+    "id": 1,
+    "name": "아트록스",
+    "image": "./fearless/Aatrox_0.jpg"
+  },
+  {
+    "id": 2,
+    "name": "아리",
+    "image": "./fearless/Ahri_0.jpg"
+  },
+  {
+    "id": 3,
+    "name": "아칼리",
+    "image": "./fearless/Akali_0.jpg"
+  },
+  {
+    "id": 4,
+    "name": "아크샨",
+    "image": "./fearless/Akshan_0.jpg"
+  },
+  {
+    "id": 5,
+    "name": "알리스타",
+    "image": "./fearless/Alistar_0.jpg"
+  },
+  {
+    "id": 6,
+    "name": "암베사",
+    "image": "./fearless/Ambessa_0.jpg"
+  },
+  {
+    "id": 7,
+    "name": "아무무",
+    "image": "./fearless/Amumu_0.jpg"
+  },
+  {
+    "id": 8,
+    "name": "애니비아",
+    "image": "./fearless/Anivia_0.jpg"
+  },
+  {
+    "id": 9,
+    "name": "애니",
+    "image": "./fearless/Annie_0.jpg"
+  },
+  {
+    "id": 10,
+    "name": "아펠리오스",
+    "image": "./fearless/Aphelios_0.jpg"
+  },
+  {
+    "id": 11,
+    "name": "애쉬",
+    "image": "./fearless/Ashe_0.jpg"
+  },
+  {
+    "id": 12,
+    "name": "아우렐리온 솔",
+    "image": "./fearless/AurelionSol_0.jpg"
+  },
+  {
+    "id": 13,
+    "name": "오로라",
+    "image": "./fearless/Aurora_0.jpg"
+  },
+  {
+    "id": 14,
+    "name": "아지르",
+    "image": "./fearless/Azir_0.jpg"
+  },
+  {
+    "id": 15,
+    "name": "바드",
+    "image": "./fearless/Bard_0.jpg"
+  },
+  {
+    "id": 16,
+    "name": "벨베스",
+    "image": "./fearless/Belveth_0.jpg"
+  },
+  {
+    "id": 17,
+    "name": "블리츠크랭크",
+    "image": "./fearless/Blitzcrank_0.jpg"
+  },
+  {
+    "id": 18,
+    "name": "브랜드",
+    "image": "./fearless/Brand_0.jpg"
+  },
+  {
+    "id": 19,
+    "name": "브라움",
+    "image": "./fearless/Braum_0.jpg"
+  },
+  {
+    "id": 20,
+    "name": "브라이어",
+    "image": "./fearless/Briar_0.jpg"
+  },
+  {
+    "id": 21,
+    "name": "케이틀린",
+    "image": "./fearless/Caitlyn_0.jpg"
+  },
+  {
+    "id": 22,
+    "name": "카밀",
+    "image": "./fearless/Camille_0.jpg"
+  },
+  {
+    "id": 23,
+    "name": "카시오페아",
+    "image": "./fearless/Cassiopeia_0.jpg"
+  },
+  {
+    "id": 24,
+    "name": "초가스",
+    "image": "./fearless/Chogath_0.jpg"
+  },
+  {
+    "id": 25,
+    "name": "코르키",
+    "image": "./fearless/Corki_0.jpg"
+  },
+  {
+    "id": 26,
+    "name": "다리우스",
+    "image": "./fearless/Darius_0.jpg"
+  },
+  {
+    "id": 27,
+    "name": "다이애나",
+    "image": "./fearless/Diana_0.jpg"
+  },
+  {
+    "id": 28,
+    "name": "드레이븐",
+    "image": "./fearless/Draven_0.jpg"
+  },
+  {
+    "id": 29,
+    "name": "문도 박사",
+    "image": "./fearless/DrMundo_0.jpg"
+  },
+  {
+    "id": 30,
+    "name": "에코",
+    "image": "./fearless/Ekko_0.jpg"
+  },
+  {
+    "id": 31,
+    "name": "엘리스",
+    "image": "./fearless/Elise_0.jpg"
+  },
+  {
+    "id": 32,
+    "name": "이블린",
+    "image": "./fearless/Evelynn_0.jpg"
+  },
+  {
+    "id": 33,
+    "name": "이즈리얼",
+    "image": "./fearless/Ezreal_0.jpg"
+  },
+  {
+    "id": 34,
+    "name": "피들스틱",
+    "image": "./fearless/FiddleSticks_0.jpg"
+  },
+  {
+    "id": 35,
+    "name": "피오라",
+    "image": "./fearless/Fiora_0.jpg"
+  },
+  {
+    "id": 36,
+    "name": "피즈",
+    "image": "./fearless/Fizz_0.jpg"
+  },
+  {
+    "id": 37,
+    "name": "갈리오",
+    "image": "./fearless/Galio_0.jpg"
+  },
+  {
+    "id": 38,
+    "name": "갱플랭크",
+    "image": "./fearless/Gangplank_0.jpg"
+  },
+  {
+    "id": 39,
+    "name": "가렌",
+    "image": "./fearless/Garen_0.jpg"
+  },
+  {
+    "id": 40,
+    "name": "나르",
+    "image": "./fearless/Gnar_0.jpg"
+  },
+  {
+    "id": 41,
+    "name": "그라가스",
+    "image": "./fearless/Gragas_0.jpg"
+  },
+  {
+    "id": 42,
+    "name": "그레이브즈",
+    "image": "./fearless/Graves_0.jpg"
+  },
+  {
+    "id": 43,
+    "name": "그웬",
+    "image": "./fearless/Gwen_0.jpg"
+  },
+  {
+    "id": 44,
+    "name": "헤카림",
+    "image": "./fearless/Hecarim_0.jpg"
+  },
+  {
+    "id": 45,
+    "name": "하이머딩거",
+    "image": "./fearless/Heimerdinger_0.jpg"
+  },
+  {
+    "id": 46,
+    "name": "흐웨이",
+    "image": "./fearless/Hwei_0.jpg"
+  },
+  {
+    "id": 47,
+    "name": "일라오이",
+    "image": "./fearless/Illaoi_0.jpg"
+  },
+  {
+    "id": 48,
+    "name": "이렐리아",
+    "image": "./fearless/Irelia_0.jpg"
+  },
+  {
+    "id": 49,
+    "name": "아이번",
+    "image": "./fearless/Ivern_0.jpg"
+  },
+  {
+    "id": 50,
+    "name": "잔나",
+    "image": "./fearless/Janna_0.jpg"
+  },
+  {
+    "id": 51,
+    "name": "자르반 4세",
+    "image": "./fearless/JarvanIV_0.jpg"
+  },
+  {
+    "id": 52,
+    "name": "잭스",
+    "image": "./fearless/Jax_0.jpg"
+  },
+  {
+    "id": 53,
+    "name": "제이스",
+    "image": "./fearless/Jayce_0.jpg"
+  },
+  {
+    "id": 54,
+    "name": "진",
+    "image": "./fearless/Jhin_0.jpg"
+  },
+  {
+    "id": 55,
+    "name": "징크스",
+    "image": "./fearless/Jinx_0.jpg"
+  },
+  {
+    "id": 56,
+    "name": "카이사",
+    "image": "./fearless/Kaisa_0.jpg"
+  },
+  {
+    "id": 57,
+    "name": "칼리스타",
+    "image": "./fearless/Kalista_0.jpg"
+  },
+  {
+    "id": 58,
+    "name": "카르마",
+    "image": "./fearless/Karma_0.jpg"
+  },
+  {
+    "id": 59,
+    "name": "카서스",
+    "image": "./fearless/Karthus_0.jpg"
+  },
+  {
+    "id": 60,
+    "name": "카사딘",
+    "image": "./fearless/Kassadin_0.jpg"
+  },
+  {
+    "id": 61,
+    "name": "카타리나",
+    "image": "./fearless/Katarina_0.jpg"
+  },
+  {
+    "id": 62,
+    "name": "케일",
+    "image": "./fearless/Kayle_0.jpg"
+  },
+  {
+    "id": 63,
+    "name": "케인",
+    "image": "./fearless/Kayn_0.jpg"
+  },
+  {
+    "id": 64,
+    "name": "케넨",
+    "image": "./fearless/Kennen_0.jpg"
+  },
+  {
+    "id": 65,
+    "name": "카직스",
+    "image": "./fearless/Khazix_0.jpg"
+  },
+  {
+    "id": 66,
+    "name": "킨드레드",
+    "image": "./fearless/Kindred_0.jpg"
+  },
+  {
+    "id": 67,
+    "name": "클레드",
+    "image": "./fearless/Kled_0.jpg"
+  },
+  {
+    "id": 68,
+    "name": "코그모",
+    "image": "./fearless/KogMaw_0.jpg"
+  },
+  {
+    "id": 69,
+    "name": "크산테",
+    "image": "./fearless/KSante_0.jpg"
+  },
+  {
+    "id": 70,
+    "name": "르블랑",
+    "image": "./fearless/Leblanc_0.jpg"
+  },
+  {
+    "id": 71,
+    "name": "리신",
+    "image": "./fearless/LeeSin_0.jpg"
+  },
+  {
+    "id": 72,
+    "name": "레오나",
+    "image": "./fearless/Leona_0.jpg"
+  },
+  {
+    "id": 73,
+    "name": "릴리아",
+    "image": "./fearless/Lillia_0.jpg"
+  },
+  {
+    "id": 74,
+    "name": "리산드라",
+    "image": "./fearless/Lissandra_0.jpg"
+  },
+  {
+    "id": 75,
+    "name": "루시안",
+    "image": "./fearless/Lucian_0.jpg"
+  },
+  {
+    "id": 76,
+    "name": "룰루",
+    "image": "./fearless/Lulu_0.jpg"
+  },
+  {
+    "id": 77,
+    "name": "럭스",
+    "image": "./fearless/Lux_0.jpg"
+  },
+  {
+    "id": 78,
+    "name": "말파이트",
+    "image": "./fearless/Malphite_0.jpg"
+  },
+  {
+    "id": 79,
+    "name": "말자하",
+    "image": "./fearless/Malzahar_0.jpg"
+  },
+  {
+    "id": 80,
+    "name": "마오카이",
+    "image": "./fearless/Maokai_0.jpg"
+  },
+  {
+    "id": 81,
+    "name": "마스터 이",
+    "image": "./fearless/MasterYi_0.jpg"
+  },
+  {
+    "id": 82,
+    "name": "밀리오",
+    "image": "./fearless/Milio_0.jpg"
+  },
+  {
+    "id": 83,
+    "name": "미스 포츈",
+    "image": "./fearless/MissFortune_0.jpg"
+  },
+  {
+    "id": 84,
+    "name": "오공",
+    "image": "./fearless/MonkeyKing_0.jpg"
+  },
+  {
+    "id": 85,
+    "name": "모데카이저",
+    "image": "./fearless/Mordekaiser_0.jpg"
+  },
+  {
+    "id": 86,
+    "name": "모르가나",
+    "image": "./fearless/Morgana_0.jpg"
+  },
+  {
+    "id": 87,
+    "name": "나피리",
+    "image": "./fearless/Naafiri_0.jpg"
+  },
+  {
+    "id": 88,
+    "name": "나미",
+    "image": "./fearless/Nami_0.jpg"
+  },
+  {
+    "id": 89,
+    "name": "나서스",
+    "image": "./fearless/Nasus_0.jpg"
+  },
+  {
+    "id": 90,
+    "name": "노틸러스",
+    "image": "./fearless/Nautilus_0.jpg"
+  },
+  {
+    "id": 91,
+    "name": "니코",
+    "image": "./fearless/Neeko_0.jpg"
+  },
+  {
+    "id": 92,
+    "name": "니달리",
+    "image": "./fearless/Nidalee_0.jpg"
+  },
+  {
+    "id": 93,
+    "name": "닐라",
+    "image": "./fearless/Nilah_0.jpg"
+  },
+  {
+    "id": 94,
+    "name": "녹턴",
+    "image": "./fearless/Nocturne_0.jpg"
+  },
+  {
+    "id": 95,
+    "name": "누누",
+    "image": "./fearless/Nunu_0.jpg"
+  },
+  {
+    "id": 96,
+    "name": "올라프",
+    "image": "./fearless/Olaf_0.jpg"
+  },
+  {
+    "id": 97,
+    "name": "오리아나",
+    "image": "./fearless/Orianna_0.jpg"
+  },
+  {
+    "id": 98,
+    "name": "오른",
+    "image": "./fearless/Ornn_0.jpg"
+  },
+  {
+    "id": 99,
+    "name": "판테온",
+    "image": "./fearless/Pantheon_0.jpg"
+  },
+  {
+    "id": 100,
+    "name": "뽀삐",
+    "image": "./fearless/Poppy_0.jpg"
+  },
+  {
+    "id": 101,
+    "name": "파이크",
+    "image": "./fearless/Pyke_0.jpg"
+  },
+  {
+    "id": 102,
+    "name": "키아나",
+    "image": "./fearless/Qiyana_0.jpg"
+  },
+  {
+    "id": 103,
+    "name": "퀸",
+    "image": "./fearless/Quinn_0.jpg"
+  },
+  {
+    "id": 104,
+    "name": "라칸",
+    "image": "./fearless/Rakan_0.jpg"
+  },
+  {
+    "id": 105,
+    "name": "람머스",
+    "image": "./fearless/Rammus_0.jpg"
+  },
+  {
+    "id": 106,
+    "name": "렉사이",
+    "image": "./fearless/RekSai_0.jpg"
+  },
+  {
+    "id": 107,
+    "name": "렐",
+    "image": "./fearless/Rell_0.jpg"
+  },
+  {
+    "id": 108,
+    "name": "레나타",
+    "image": "./fearless/Renata_0.jpg"
+  },
+  {
+    "id": 109,
+    "name": "레넥톤",
+    "image": "./fearless/Renekton_0.jpg"
+  },
+  {
+    "id": 110,
+    "name": "렝가",
+    "image": "./fearless/Rengar_0.jpg"
+  },
+  {
+    "id": 111,
+    "name": "리븐",
+    "image": "./fearless/Riven_0.jpg"
+  },
+  {
+    "id": 112,
+    "name": "럼블",
+    "image": "./fearless/Rumble_0.jpg"
+  },
+  {
+    "id": 113,
+    "name": "라이즈",
+    "image": "./fearless/Ryze_0.jpg"
+  },
+  {
+    "id": 114,
+    "name": "사미라",
+    "image": "./fearless/Samira_0.jpg"
+  },
+  {
+    "id": 115,
+    "name": "세주아니",
+    "image": "./fearless/Sejuani_0.jpg"
+  },
+  {
+    "id": 116,
+    "name": "세나",
+    "image": "./fearless/Senna_0.jpg"
+  },
+  {
+    "id": 117,
+    "name": "세라핀",
+    "image": "./fearless/Seraphine_0.jpg"
+  },
+  {
+    "id": 118,
+    "name": "세트",
+    "image": "./fearless/Sett_0.jpg"
+  },
+  {
+    "id": 119,
+    "name": "샤코",
+    "image": "./fearless/Shaco_0.jpg"
+  },
+  {
+    "id": 120,
+    "name": "쉔",
+    "image": "./fearless/Shen_0.jpg"
+  },
+  {
+    "id": 121,
+    "name": "쉬바나",
+    "image": "./fearless/Shyvana_0.jpg"
+  },
+  {
+    "id": 122,
+    "name": "신지드",
+    "image": "./fearless/Singed_0.jpg"
+  },
+  {
+    "id": 123,
+    "name": "사이온",
+    "image": "./fearless/Sion_0.jpg"
+  },
+  {
+    "id": 124,
+    "name": "시비르",
+    "image": "./fearless/Sivir_0.jpg"
+  },
+  {
+    "id": 125,
+    "name": "스카너",
+    "image": "./fearless/Skarner_0.jpg"
+  },
+  {
+    "id": 126,
+    "name": "스몰더",
+    "image": "./fearless/Smolder_0.jpg"
+  },
+  {
+    "id": 127,
+    "name": "소나",
+    "image": "./fearless/Sona_0.jpg"
+  },
+  {
+    "id": 128,
+    "name": "소라카",
+    "image": "./fearless/Soraka_0.jpg"
+  },
+  {
+    "id": 129,
+    "name": "스웨인",
+    "image": "./fearless/Swain_0.jpg"
+  },
+  {
+    "id": 130,
+    "name": "사일러스",
+    "image": "./fearless/Sylas_0.jpg"
+  },
+  {
+    "id": 131,
+    "name": "신드라",
+    "image": "./fearless/Syndra_0.jpg"
+  },
+  {
+    "id": 132,
+    "name": "탐켄치",
+    "image": "./fearless/TahmKench_0.jpg"
+  },
+  {
+    "id": 133,
+    "name": "탈리야",
+    "image": "./fearless/Taliyah_0.jpg"
+  },
+  {
+    "id": 134,
+    "name": "탈론",
+    "image": "./fearless/Talon_0.jpg"
+  },
+  {
+    "id": 135,
+    "name": "타릭",
+    "image": "./fearless/Taric_0.jpg"
+  },
+  {
+    "id": 136,
+    "name": "티모",
+    "image": "./fearless/Teemo_0.jpg"
+  },
+  {
+    "id": 137,
+    "name": "쓰레쉬",
+    "image": "./fearless/Thresh_0.jpg"
+  },
+  {
+    "id": 138,
+    "name": "트리스타나",
+    "image": "./fearless/Tristana_0.jpg"
+  },
+  {
+    "id": 139,
+    "name": "트런들",
+    "image": "./fearless/Trundle_0.jpg"
+  },
+  {
+    "id": 140,
+    "name": "트린다미어",
+    "image": "./fearless/Tryndamere_0.jpg"
+  },
+  {
+    "id": 141,
+    "name": "트위스티드 페이트",
+    "image": "./fearless/TwistedFate_0.jpg"
+  },
+  {
+    "id": 142,
+    "name": "트위치",
+    "image": "./fearless/Twitch_0.jpg"
+  },
+  {
+    "id": 143,
+    "name": "우디르",
+    "image": "./fearless/Udyr_0.jpg"
+  },
+  {
+    "id": 144,
+    "name": "우르곳",
+    "image": "./fearless/Urgot_0.jpg"
+  },
+  {
+    "id": 145,
+    "name": "바루스",
+    "image": "./fearless/Varus_0.jpg"
+  },
+  {
+    "id": 146,
+    "name": "베인",
+    "image": "./fearless/Vayne_0.jpg"
+  },
+  {
+    "id": 147,
+    "name": "베이가",
+    "image": "./fearless/Veigar_0.jpg"
+  },
+  {
+    "id": 148,
+    "name": "벨코즈",
+    "image": "./fearless/Velkoz_0.jpg"
+  },
+  {
+    "id": 149,
+    "name": "벡스",
+    "image": "./fearless/Vex_0.jpg"
+  },
+  {
+    "id": 150,
+    "name": "비에고",
+    "image": "./fearless/Viego_0.jpg"
+  },
+  {
+    "id": 151,
+    "name": "빅토르",
+    "image": "./fearless/Viktor_0.jpg"
+  },
+  {
+    "id": 152,
+    "name": "바이",
+    "image": "./fearless/Vi_0.jpg"
+  },
+  {
+    "id": 153,
+    "name": "블라디미르",
+    "image": "./fearless/Vladimir_0.jpg"
+  },
+  {
+    "id": 154,
+    "name": "볼리베어",
+    "image": "./fearless/Volibear_0.jpg"
+  },
+  {
+    "id": 155,
+    "name": "워윅",
+    "image": "./fearless/Warwick_0.jpg"
+  },
+  {
+    "id": 156,
+    "name": "자야",
+    "image": "./fearless/Xayah_0.jpg"
+  },
+  {
+    "id": 157,
+    "name": "제라스",
+    "image": "./fearless/Xerath_0.jpg"
+  },
+  {
+    "id": 158,
+    "name": "신짜오",
+    "image": "./fearless/XinZhao_0.jpg"
+  },
+  {
+    "id": 159,
+    "name": "야스오",
+    "image": "./fearless/Yasuo_0.jpg"
+  },
+  {
+    "id": 160,
+    "name": "요네",
+    "image": "./fearless/Yone_0.jpg"
+  },
+  {
+    "id": 161,
+    "name": "요릭",
+    "image": "./fearless/Yorick_0.jpg"
+  },
+  {
+    "id": 162,
+    "name": "유미",
+    "image": "./fearless/Yuumi_0.jpg"
+  },
+  {
+    "id": 163,
+    "name": "자크",
+    "image": "./fearless/Zac_0.jpg"
+  },
+  {
+    "id": 164,
+    "name": "제드",
+    "image": "./fearless/Zed_0.jpg"
+  },
+  {
+    "id": 165,
+    "name": "제리",
+    "image": "./fearless/Zeri_0.jpg"
+  },
+  {
+    "id": 166,
+    "name": "직스",
+    "image": "./fearless/Ziggs_0.jpg"
+  },
+  {
+    "id": 167,
+    "name": "질리언",
+    "image": "./fearless/Zilean_0.jpg"
+  },
+  {
+    "id": 168,
+    "name": "조이",
+    "image": "./fearless/Zoe_0.jpg"
+  },
+  {
+    "id": 169,
+    "name": "자이라",
+    "image": "./fearless/Zyra_0.jpg"
+  }
+]

@@ -19,3 +19,30 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+@font-face {
+  font-family: 'NEXONLv2Gothic';
+  src: url('/fonts/NEXONLv2Gothic-Light.otf') format('opentype');
+  font-weight: 300; /* Light */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NEXONLv2Gothic';
+  src: url('/fonts/NEXONLv2Gothic-Regular.otf') format('opentype');
+  font-weight: 400; /* Regular */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NEXONLv2Gothic';
+  src: url('/fonts/NEXONLv2Gothic-Medium.otf') format('opentype');
+  font-weight: 500; /* Medium */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NEXONLv2Gothic';
+  src: url('/fonts/NEXONLv2Gothic-Bold.otf') format('opentype');
+  font-weight: 700; /* Bold */
+  font-style: normal;
+}
