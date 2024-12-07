@@ -153,18 +153,18 @@ export default function BanpickUI() {
 
   return (
     <div className="min-h-screen bg-gray-200 text-black">
-      <div className="flex items-center justify-between bg-gray-200 h-16">
-        <div className="flex items-center justify-center bg-blue-500 text-black font-bold text-xl w-[40%] h-full font-gong">
+      <div className="flex items-center justify-between bg-gray-200 h-40">
+        <div className="flex items-start justify-center bg-blue-500 text-black font-bold text-3xl w-[45%] h-full font-gong">
           Blue Team
         </div>
-        <div className="flex items-center justify-center bg-gray-800 text-white font-bold text-3xl w-[20%] h-full font-gong">
+        <div className="flex items-center justify-center bg-gray-800 text-white font-bold text-3xl w-[10%] h-full font-gong">
           <div className="flex flex-col justify-center items-center">
-            <h2 className="text-xl font-bold font-gong">{currentPhase.toUpperCase()} PHASE</h2>
+            <h2 className="text-xl font-bold font-gong">{currentPhase.toUpperCase()}</h2>
             {timer}
           </div>
         
         </div>
-        <div className="flex items-center justify-center bg-red-500 text-black font-bold text-xl w-[40%] h-full font-gong">
+        <div className="flex items-start justify-center bg-red-500 text-black font-bold text-3xl w-[45%] h-full font-gong">
           Red Team
         </div>
       </div>
@@ -216,10 +216,10 @@ export default function BanpickUI() {
             </div>
           </div>
 
-          
+           
 
           <div className="w-1/2 flex flex-col items-center">
-            <div className="flex justify-center items-center bg-gray-500 h-96 relative w-full">
+            <div className="flex justify-center items-center bg-gray-500 h-[90%] relative w-full ">
               <Image
                 src="/main.jpg" 
                 alt="중앙 광고 이미지"
