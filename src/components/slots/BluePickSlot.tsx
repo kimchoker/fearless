@@ -28,9 +28,11 @@ const BluePickSlot: React.FC<PickSlotProps & { isRipple: boolean }> = ({
       {isRipple && <div className="ripple-effect"></div>}
 
       {/* 선수 이름 - 블루 팀: 오른쪽 정렬 */}
-      <div className="absolute right-2 text-white px-2 py-1 font-gong text-xl">
-        {playerName}
+      <div className="absolute right-2 text-white px-2 py-1 font-gong text-2xl flex flex-col items-end">
+        <span className="text-sm">{slotData?.name}</span>
+        <span>{playerName}</span>
       </div>
+
     </div>
   );
 };

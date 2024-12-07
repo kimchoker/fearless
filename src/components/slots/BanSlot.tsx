@@ -12,7 +12,7 @@ const BanSlot: React.FC<BanSlotProps & { isRipple: boolean }> = ({
 
   return (
     <div
-      className={`relative w-16 h-16 bg-white border rounded overflow-hidden ${pulseClass}`}
+      className={`relative w-20 h-20 min-w-20 min-h-20 bg-gray-700 overflow-hidden space-x-1 ${pulseClass}`}
       style={{
         backgroundImage: slotData
           ? `url(${slotData.image.replace("./", "/")})`
@@ -23,6 +23,23 @@ const BanSlot: React.FC<BanSlotProps & { isRipple: boolean }> = ({
         backgroundPosition: "center",
       }}
     >
+      {/* 대각선 선 */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 0, // 챔피언 이미지 뒤로 보내기
+        }}
+      >
+        <div
+          className="absolute w-[200%] h-[1px] bg-gray-500"
+          style={{
+            transform: "rotate(45deg)",
+            top: "50%",
+            left: "-50%",
+          }}
+        ></div>
+      </div>
+
       {/* ripple 효과 */}
       {isRipple && <div className="ripple-effect"></div>}
     </div>
