@@ -1,7 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
 import champions from "../../../public/champions.json";
+import { phaseOrder } from "@/data/phase";
+import { Champion, PhaseTurn, PhaseType } from "@/types/types";
+import BanSlot from "@/components/slots/BanSlot";
+import RedPickSlot from "@/components/slots/RedPickSlot";
+import BluePickSlot from "@/components/slots/BluePickSlot";
 
 export default function BanpickUI() {
   const [redTeamNames, setRedTeamNames] = useState([
@@ -19,67 +25,77 @@ export default function BanpickUI() {
     "Life",
   ]);
   const [searchText, setSearchText] = useState("");
-  const [currentPhase, setCurrentPhase] = useState("ban1"); // ban1, pick1, ban2
-  const [currentTurn, setCurrentTurn] = useState(0); // 현재 턴
-  const [currentTeam, setCurrentTeam] = useState("blue"); // 현재 턴 팀
-  const [banSlots, setBanSlots] = useState({
+  const [currentPhase, setCurrentPhase] = useState<PhaseType>("ban1");
+  const [currentTurn, setCurrentTurn] = useState(0);
+  const [banSlots, setBanSlots] = useState<Record<"blue" | "red", (Champion | null)[]>>({
     blue: Array(5).fill(null),
     red: Array(5).fill(null),
   });
-  const [pickSlots, setPickSlots] = useState({
+  const [pickSlots, setPickSlots] = useState<Record<"blue" | "red", (Champion | null)[]>>({
     blue: Array(5).fill(null),
     red: Array(5).fill(null),
   });
-  const [bannedChampions, setBannedChampions] = useState([]); // 이미 밴된 챔피언 저장
-  const [pickedChampions, setPickedChampions] = useState([]); // 이미 픽된 챔피언 저장
-  const [selectedChampion, setSelectedChampion] = useState(null);
+  const [bannedChampions, setBannedChampions] = useState<Champion[]>([]);
+  const [pickedChampions, setPickedChampions] = useState<Champion[]>([]);
+  const [selectedChampion, setSelectedChampion] = useState<Champion | null>(null);
+  const [rippleSlot, setRippleSlot] = useState<{
+    team: "blue" | "red";
+    turn: number;
+  } | null>(null);
 
-  const handleChampionClick = (champion) => {
+  const handleChampionClick = (champion: Champion) => {
     if (
       bannedChampions.some((banned) => banned.id === champion.id) ||
       pickedChampions.some((picked) => picked.id === champion.id)
     )
-      return; // 클릭 불가
+      return;
     setSelectedChampion(champion);
-
-    if (currentPhase.startsWith("ban")) {
-      const updatedBanSlots = { ...banSlots };
-      const slotIndex =
-        currentPhase === "ban1"
-          ? Math.floor(currentTurn / 2)
-          : currentTurn - 6; // 밴2의 경우
-      updatedBanSlots[currentTeam][slotIndex] = champion;
-      setBanSlots(updatedBanSlots);
-    } else if (currentPhase.startsWith("pick")) {
-      const updatedPickSlots = { ...pickSlots };
-      updatedPickSlots[currentTeam][Math.floor(currentTurn / 2)] = champion;
-      setPickSlots(updatedPickSlots);
-    }
   };
 
   const handleConfirmSelection = () => {
     if (!selectedChampion) return;
 
+    const phaseTurns: PhaseTurn[] = phaseOrder[currentPhase];
+    const currentTurnInfo: PhaseTurn = phaseTurns[currentTurn];
+
+    setRippleSlot(currentTurnInfo);
+
+    setTimeout(() => {
+      setRippleSlot(null);
+    }, 800);
+
     if (currentPhase.startsWith("ban")) {
-      setBannedChampions((prev) => [...prev, selectedChampion]);
+      setBannedChampions((prev: Champion[]) => [...prev, selectedChampion]);
+      setBanSlots((prev) => {
+        const updated = { ...prev };
+        updated[currentTurnInfo.team][currentTurnInfo.turn % 5] = selectedChampion;
+        return updated;
+      });
     } else if (currentPhase.startsWith("pick")) {
-      setPickedChampions((prev) => [...prev, selectedChampion]);
+      setPickedChampions((prev: Champion[]) => [...prev, selectedChampion]);
+      setPickSlots((prev) => {
+        const updated = { ...prev };
+        updated[currentTurnInfo.team][currentTurnInfo.turn % 5] = selectedChampion;
+        return updated;
+      });
     }
 
     const nextTurn = currentTurn + 1;
-    if (currentPhase === "ban1" && nextTurn >= 6) {
-      setCurrentPhase("pick1");
-      setCurrentTurn(0);
-      setCurrentTeam("blue");
-    } else if (currentPhase === "pick1" && nextTurn >= 6) {
-      setCurrentPhase("ban2");
-      setCurrentTurn(6);
-      setCurrentTeam("red");
-    } else if (currentPhase === "ban2" && nextTurn >= 10) {
-      setCurrentPhase("complete");
+    if (nextTurn >= phaseTurns.length) {
+      if (currentPhase === "ban1") {
+        setCurrentPhase("pick1");
+        setCurrentTurn(0);
+      } else if (currentPhase === "pick1") {
+        setCurrentPhase("ban2");
+        setCurrentTurn(0);
+      } else if (currentPhase === "ban2") {
+        setCurrentPhase("pick2");
+        setCurrentTurn(0);
+      } else if (currentPhase === "pick2") {
+        setCurrentPhase("complete");
+      }
     } else {
       setCurrentTurn(nextTurn);
-      setCurrentTeam((prev) => (prev === "blue" ? "red" : "blue"));
     }
 
     setSelectedChampion(null);
@@ -89,125 +105,149 @@ export default function BanpickUI() {
     champion.name.includes(searchText)
   );
 
+  const handleBlueTeamNameChange = (index: number, value: string) => {
+    setBlueTeamNames((prev) => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
+  };
+
+  const handleRedTeamNameChange = (index: number, value: string) => {
+    setRedTeamNames((prev) => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-200 text-black">
-      {/* 상단 제목 및 타이머 */}
-      <div className="flex justify-between items-center bg-gray-300 py-4 px-10">
-        <div className="text-center">
-          <h2 className="text-xl font-bold">피어리스 밴픽 UI</h2>
+      <div className="flex items-center justify-between bg-gray-200 h-16">
+        <div className="flex items-center justify-center bg-blue-500 text-black font-bold text-xl w-[40%] h-full font-gong">
+          Blue Team
         </div>
-        <div className="text-center">
-          <h2 className="text-xl font-bold">{currentPhase.toUpperCase()} PHASE</h2>
+        <div className="flex items-center justify-center bg-gray-800 text-white font-bold text-lg w-[20%] h-full font-gong">
+          00:00
         </div>
-        <div className="text-center">
-          <h2 className="text-xl font-bold">GAME1</h2>
+        <div className="flex items-center justify-center bg-red-500 text-black font-bold text-xl w-[40%] h-full font-gong">
+          Red Team
         </div>
       </div>
 
-      {/* 메인 UI */}
       <div className="flex flex-col items-center">
-        <div className="flex justify-between w-full px-10">
-          {/* 블루 팀 */}
-          <div className="flex flex-col w-1/4">
-            {/* 픽 칸 */}
-            {blueTeamNames.map((name, index) => (
-              <div
-                key={index}
-                className="bg-gray-700 h-24 flex justify-between items-center px-2"
-                style={{
-                  backgroundImage: pickSlots.blue[index]
-                    ? `url(${pickSlots.blue[index].pickimg.replace("./", "/")})`
-                    : "none",
-                  backgroundSize: "cover",
-                  backgroundPosition: "top",
-                }}
-              >
-                <div className="text-center text-white px-2 py-1">{name}</div>
-              </div>
-            ))}
-            {/* 밴 칸 */}
-            <div className="bg-blue-100 text-center py-4 mt-4">
-              <h3 className="text-lg">밴 페이즈</h3>
-              <div className="flex justify-center space-x-4 mt-2">
-                {banSlots.blue.map((ban, index) => (
-                  <div
-                    key={index}
-                    className="w-12 h-12 bg-white border rounded flex items-center justify-center"
-                  >
-                    {ban && (
-                      <img
-                        src={ban.image.replace("./", "/")}
-                        alt={ban.name}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
+        <div className="flex justify-between w-full">
+          <div className="w-1/4">
+            <>
+              {blueTeamNames.map((name, idx) => (
+                <BluePickSlot
+                  key={idx}
+                  playerName={name}
+                  slotData={pickSlots.blue[idx]}
+                  isCurrentTurn={
+                    currentPhase.startsWith("pick") &&
+                    phaseOrder[currentPhase][currentTurn]?.team === "blue" &&
+                    phaseOrder[currentPhase][currentTurn]?.turn === idx
+                  }
+                  selectedChampion={selectedChampion}
+                  isRipple={
+                    rippleSlot?.team === "blue" &&
+                    rippleSlot?.turn === idx &&
+                    currentPhase.startsWith("pick")
+                  }
+                />
+              ))}
+            </>
+
+            <div className="flex space-x-2 justify-center">
+              <>
+                {banSlots.blue.map((slot, idx) => (
+                  <BanSlot
+                    key={idx}
+                    slotData={slot}
+                    isCurrentTurn={
+                      currentPhase.startsWith("ban") &&
+                      phaseOrder[currentPhase][currentTurn]?.team === "blue" &&
+                      phaseOrder[currentPhase][currentTurn]?.turn === idx
+                    }
+                    isRipple={
+                      rippleSlot?.team === "blue" &&
+                      rippleSlot?.turn === idx &&
+                      currentPhase.startsWith("ban")
+                    }
+                    selectedChampion={selectedChampion}
+                  />
                 ))}
-              </div>
+              </>
             </div>
           </div>
 
-          {/* 광고 자리 */}
-          <div className="flex justify-center items-center bg-gray-600 w-1/2 h-96">
-            <p className="text-xl">광고 자리 비워놔야함</p>
+          <div className="w-1/2 flex flex-col items-center">
+            <div className="flex justify-center items-center bg-gray-500 h-96">
+              <p className="text-white text-lg">중앙 광고 자리</p>
+            </div>
+            <h2 className="text-xl font-bold font-gong">{currentPhase.toUpperCase()} PHASE</h2>
           </div>
 
-          {/* 레드 팀 */}
-          <div className="flex flex-col w-1/4">
-            {/* 픽 칸 */}
-            {redTeamNames.map((name, index) => (
-              <div
-                key={index}
-                className="bg-gray-700 h-24 flex justify-between items-center px-2"
-                style={{
-                  backgroundImage: pickSlots.red[index]
-                    ? `url(${pickSlots.red[index].pickimg.replace("./", "/")})`
-                    : "none",
-                  backgroundSize: "cover",
-                  backgroundPosition: "top",
-                }}
-              >
-                <div className="text-center text-white px-2 py-1">{name}</div>
-              </div>
-            ))}
-            {/* 밴 칸 */}
-            <div className="bg-blue-100 text-center py-4 mt-4">
-              <h3 className="text-lg">밴 페이즈</h3>
-              <div className="flex justify-center space-x-4 mt-2">
-                {banSlots.red.map((ban, index) => (
-                  <div
-                    key={index}
-                    className="w-12 h-12 bg-white border rounded flex items-center justify-center"
-                  >
-                    {ban && (
-                      <img
-                        src={ban.image.replace("./", "/")}
-                        alt={ban.name}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
+          <div className="w-1/4">
+            <>
+              {redTeamNames.map((name, idx) => (
+                <RedPickSlot
+                  key={idx}
+                  playerName={name}
+                  slotData={pickSlots.red[idx]}
+                  isCurrentTurn={
+                    currentPhase.startsWith("pick") &&
+                    phaseOrder[currentPhase][currentTurn]?.team === "red" &&
+                    phaseOrder[currentPhase][currentTurn]?.turn === idx
+                  }
+                  selectedChampion={selectedChampion}
+                  isRipple={
+                    rippleSlot?.team === "red" &&
+                    rippleSlot?.turn === idx &&
+                    currentPhase.startsWith("pick")
+                  }
+                />
+              ))}
+            </>
+
+            <div className="flex space-x-2 justify-center mt-4">
+              <>
+                {banSlots.red.map((slot, idx) => (
+                  <BanSlot
+                    key={idx}
+                    slotData={slot}
+                    isCurrentTurn={
+                      currentPhase.startsWith("ban") &&
+                      phaseOrder[currentPhase][currentTurn]?.team === "red" &&
+                      phaseOrder[currentPhase][currentTurn]?.turn === idx
+                    }
+                    isRipple={
+                      rippleSlot?.team === "red" &&
+                      rippleSlot?.turn === idx &&
+                      currentPhase.startsWith("ban")
+                    }
+                    selectedChampion={selectedChampion}
+                  />
                 ))}
-              </div>
+              </>
             </div>
           </div>
         </div>
 
-        {/* 하단 추가 UI */}
         <div className="flex w-full justify-between px-10 py-4">
-          {/* 블루 팀 */}
           <div className="flex flex-col space-y-2">
             {blueTeamNames.map((name, index) => (
               <input
                 key={index}
                 type="text"
                 value={name}
+                onChange={(e) => handleBlueTeamNameChange(index, e.target.value)}
                 className="bg-gray-300 w-48 text-center py-2"
               />
             ))}
           </div>
 
-          {/* 중앙 */}
           <div className="flex flex-col items-center space-y-4">
             <button
               onClick={handleConfirmSelection}
@@ -232,12 +272,7 @@ export default function BanpickUI() {
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
-                  onClick={() =>
-                    !bannedChampions.some((banned) => banned.id === champion.id) &&
-                    !pickedChampions.some((picked) => picked.id === champion.id)
-                      ? handleChampionClick(champion)
-                      : null
-                  }
+                  onClick={() => handleChampionClick(champion)}
                 >
                   <img
                     src={champion.image.replace("./", "/")}
@@ -250,13 +285,13 @@ export default function BanpickUI() {
             </div>
           </div>
 
-          {/* 레드 팀 */}
           <div className="flex flex-col space-y-2">
             {redTeamNames.map((name, index) => (
               <input
                 key={index}
                 type="text"
                 value={name}
+                onChange={(e) => handleRedTeamNameChange(index, e.target.value)}
                 className="bg-gray-300 w-48 text-center py-2"
               />
             ))}

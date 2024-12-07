@@ -46,3 +46,61 @@ body {
   font-weight: 700; /* Bold */
   font-style: normal;
 }
+
+@font-face {
+  font-family: 'LINESeedKR-Bd';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GongGothicMedium';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer utilities {
+  @keyframes pulse {
+    0% {
+      filter: brightness(1);
+    }
+    50% {
+      filter: brightness(0.7);
+    }
+    100% {
+      filter: brightness(1);
+    }
+  }
+
+  .pulse-animation {
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  
+  .ripple-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px; /* 물결의 시작 크기 */
+    height: 100px;
+    background: rgba(255, 255, 255, 0.5); /* 물결 색상 */
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.8s ease-out forwards;
+    pointer-events: none; /* 애니메이션이 클릭 이벤트에 영향 주지 않도록 설정 */
+    overflow: hidden;
+  }
+  
+}

@@ -7,7 +7,9 @@ module.exports = {
   theme: {
     extend: {},
       fontFamily: {
-        nexon: ['NEXONLv2Gothic', 'sans-serif'], // 사용자 정의 폰트
+        nexon: ['NEXONLv2Gothic', 'sans-serif'],
+        lineSeed: ['LINESeedKR-Bd', 'sans-serif'], // 사용자 정의 폰트
+        gong: ["GongGothicMedium", "sans-serif"],
       },
   },
   plugins: [],
