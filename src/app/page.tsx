@@ -10,13 +10,13 @@ const MainPage = () => {
   const [teamBlue, setTeamBlue] = useState("");
   const [nickname, setNickname] = useState("");
   const router = useRouter();
-
+  
   const handleCreateSession = async () => {
     if (!teamRed || !teamBlue || !nickname) {
       alert("모든 정보를 입력해주세요!");
       return;
     }
-
+    
     const sessionId = await createSession({
       teamRed,
       teamBlue,
