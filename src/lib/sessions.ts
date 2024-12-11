@@ -1,3 +1,4 @@
+'use client'
 import { ref, set, getDatabase } from "firebase/database";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

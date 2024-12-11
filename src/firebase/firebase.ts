@@ -1,4 +1,3 @@
-'use client'
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase } from "firebase/database";
 
@@ -13,7 +12,11 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-const database = getDatabase(app);
-console.log('Firebase Apps:', getApps());
+let database;
+
+if (typeof window !== "undefined" && !getApps().length) {
+  const app = initializeApp(firebaseConfig);
+  database = getDatabase(app);
+}
+
 export default database;
