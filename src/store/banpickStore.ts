@@ -27,7 +27,7 @@ export const useBanpickStore = create(
 
       addGame: () =>
         set((state) => {
-          const newGameId = `Game${Object.keys(state.games).length + 1}`;
+          const newGameId = `Game ${Object.keys(state.games).length + 1}`;
           console.log(`Adding game: ${newGameId}`);
           return { games: { ...state.games, [newGameId]: { red: [], blue: [] } } };
         }),

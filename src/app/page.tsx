@@ -1,98 +1,95 @@
 "use client";
 
-import { useBanpickStore } from "@/store/banpickStore";
-import Image from "next/image";
+import { useState } from "react";
+import { createSession } from "@/lib/sessions";
+import { useRouter } from "next/navigation";
 
-export default function BroadcastPage() {
-  const games = useBanpickStore((state) => state.games); // games 상태를 직접 사용
+const MainPage = () => {
+  const [step, setStep] = useState(1);
+  const [teamRed, setTeamRed] = useState("");
+  const [teamBlue, setTeamBlue] = useState("");
+  const [nickname, setNickname] = useState("");
+  const router = useRouter();
 
-  const gameEntries = Object.entries(games);
+  const handleCreateSession = async () => {
+    if (!teamRed || !teamBlue || !nickname) {
+      alert("모든 정보를 입력해주세요!");
+      return;
+    }
+
+    const sessionId = await createSession({
+      teamRed,
+      teamBlue,
+      participants: { red: [], blue: [] },
+    });
+
+    // LinksPage로 이동
+    router.push(`/links/${sessionId}`);
+  };
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-start bg-[#D6E4F0] text-black p-4"
-      style={{ fontFamily: "sans-serif" }}
-    >
-      <div className="flex w-full max-w-7xl justify-between">
-        {/* 레드 팀 */}
-        <div className="flex flex-col items-end w-1/3 space-y-2">
-          
-          {Array.from({ length: Math.ceil(gameEntries.length / 2) }).map((_, rowIndex) => {
-            const rowGames = gameEntries.slice(rowIndex * 2, rowIndex * 2 + 2);
-            return (
-              <div key={rowIndex} className="flex gap-8">
-                {rowGames.map(([gameId, gameData]) => (
-                  <div key={gameId} className="text-right font-nexon font-bold">
-                    <h2 className="font-bold">{gameId.toUpperCase()}</h2>
-                    <div className="grid grid-cols-5 gap-1">
-                      {[...Array(5)].map((_, index) => {
-                        const champion = gameData.red[index];
-                        return champion ? (
-                          <Image
-                            key={champion.id}
-                            src={champion.image.replace("./", "/")}
-                            alt={champion.name}
-                            width={40}
-                            height={40}
-                            className="rounded"
-                          />
-                        ) : (
-                          <div
-                            key={`red-slot-${gameId}-${index}`}
-                            className="w-10 h-10 bg-gray-300 border rounded"
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 중앙 로고 */}
-        <div className="flex flex-col items-center w-1/3">
-          <Image src="/logo.png" alt="Logo" width={128} height={128} className="rounded" />
-        </div>
-
-        {/* 블루 팀 */}
-        <div className="flex flex-col items-start w-1/3 space-y-2">
-         
-          {Array.from({ length: Math.ceil(gameEntries.length / 2) }).map((_, rowIndex) => {
-            const rowGames = gameEntries.slice(rowIndex * 2, rowIndex * 2 + 2);
-            return (
-              <div key={rowIndex} className="flex gap-8">
-                {rowGames.map(([gameId, gameData]) => (
-                  <div key={gameId} className="text-left">
-                    <h2 className="font-bold font-nexon">{gameId.toUpperCase()}</h2>
-                    <div className="grid grid-cols-5 gap-1">
-                      {[...Array(5)].map((_, index) => {
-                        const champion = gameData.blue[index];
-                        return champion ? (
-                          <Image
-                            key={champion.id}
-                            src={champion.image.replace("./", "/")}
-                            alt={champion.name}
-                            width={40}
-                            height={40}
-                            className="rounded"
-                          />
-                        ) : (
-                          <div
-                            key={`blue-slot-${gameId}-${index}`}
-                            className="w-10 h-10 bg-gray-300 border rounded"
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            );
-          })}
-        </div>
+    <div className="min-h-screen bg-gray-800 text-white flex flex-col justify-center items-center font-gong">
+      <div className="absolute top-4 right-4 flex space-x-4">
+        <button
+          onClick={() => router.push("/settings")}
+          className="bg-blue-500 px-4 py-2 rounded text-white hover:bg-blue-600 transition"
+        >
+          Settings
+        </button>
+        <button
+          onClick={() => router.push("/fearless")}
+          className="bg-green-500 px-4 py-2 rounded text-white hover:bg-green-600 transition"
+        >
+          Fearless
+        </button>
       </div>
+
+      {step === 1 && (
+        <div className="bg-gray-700 p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+          <h2 className="text-2xl text-center mb-6">팀 이름 설정</h2>
+          <input
+            type="text"
+            value={teamRed}
+            onChange={(e) => setTeamRed(e.target.value)}
+            placeholder="레드 팀 이름"
+            className="w-full mb-4 p-3 rounded border border-gray-500 text-black"
+          />
+          <input
+            type="text"
+            value={teamBlue}
+            onChange={(e) => setTeamBlue(e.target.value)}
+            placeholder="블루 팀 이름"
+            className="w-full mb-4 p-3 rounded border border-gray-500 text-black"
+          />
+          <button
+            onClick={() => setStep(2)}
+            className="w-full bg-blue-500 py-3 rounded text-lg hover:bg-blue-600 transition"
+          >
+            다음
+          </button>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="bg-gray-700 p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+          <h2 className="text-2xl text-center mb-6">닉네임 설정</h2>
+          <input
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="닉네임 입력"
+            className="w-full mb-4 p-3 rounded border border-gray-500 text-black"
+          />
+          <button
+            onClick={handleCreateSession}
+            className="w-full bg-green-500 py-3 rounded text-lg hover:bg-green-600 transition"
+          >
+            세션 생성
+          </button>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default MainPage;
