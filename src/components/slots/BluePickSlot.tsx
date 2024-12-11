@@ -15,9 +15,9 @@ const BluePickSlot: React.FC<PickSlotProps & { isRipple: boolean }> = ({
     <div
       className={`relative bg-gray-700 h-40 flex items-center px-2 overflow-hidden ${pulseClass}`}
       style={{
-        backgroundImage: slotData
+        backgroundImage: slotData?.pickimg
           ? `url(${slotData.pickimg.replace("./", "/")})`
-          : isCurrentTurn && selectedChampion
+          : isCurrentTurn && selectedChampion?.pickimg
           ? `url(${selectedChampion.pickimg.replace("./", "/")})`
           : "none",
         backgroundSize: "cover",
