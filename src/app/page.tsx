@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { createSession } from "@/firebase/firebaseApi";
+import { ref, push, update } from "firebase/database";
+import database from "@/firebase/firebase";
 import { useRouter } from "next/navigation";
 
 const MainPage = () => {
@@ -16,12 +17,50 @@ const MainPage = () => {
       alert("모든 정보를 입력해주세요!");
       return;
     }
-  
+
     try {
-      const sessionId = await createSession({ 
-        teamRed, 
-        teamBlue 
-      });
+      const sessionsRef = ref(database, "sessions");
+      const newSessionRef = push(sessionsRef); // 고유 세션 ID 생성
+      const sessionId = newSessionRef.key;
+
+      if (!sessionId) throw new Error("Session ID 생성 실패");
+
+      // 초기 세션 데이터 설정
+      const initialSessionData = {
+        phase: "waiting",
+        turn: 0,
+        teams: {
+          red: {
+            name: teamRed,
+            players: [
+              { key: "8", nickname: "", connected: false },
+              { key: "9", nickname: "", connected: false },
+              { key: "12", nickname: "", connected: false },
+              { key: "17", nickname: "", connected: false },
+              { key: "20", nickname: "", connected: false },
+            ],
+          },
+          blue: {
+            name: teamBlue,
+            players: [
+              { key: "7", nickname: "", connected: false },
+              { key: "10", nickname: "", connected: false },
+              { key: "11", nickname: "", connected: false },
+              { key: "18", nickname: "", connected: false },
+              { key: "19", nickname: "", connected: false },
+            ],
+          },
+        },
+        spectators: [],
+        banSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
+        pickSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
+        bannedChampions: [],
+        pickedChampions: [],
+      };
+
+      // Firebase에 데이터 저장
+      await update(newSessionRef, initialSessionData);
+
       router.push(`/links/${sessionId}`);
     } catch (error) {
       console.error("세션 생성 중 오류가 발생했습니다:", error);
