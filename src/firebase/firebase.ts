@@ -21,9 +21,11 @@ if (typeof window !== "undefined" && !getApps().length) {
   database = getDatabase(app);
 }
 
-export const getFirebaseDatabase = (): Database => {
+const getFirebaseDatabase = (): Database => {
   if (!database) {
     throw new Error("Firebase database has not been initialized.");
   }
   return database;
 };
+
+export default getFirebaseDatabase;
