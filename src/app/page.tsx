@@ -12,59 +12,59 @@ const MainPage = () => {
   const router = useRouter();
 
   const handleCreateSession = async () => {
-    if (!teamRed || !teamBlue || !nickname) {
-      alert("모든 정보를 입력해주세요!");
-      return;
-    }
-
-    try {
-      const database = getDatabaseInstance();
-      const sessionsRef = ref(database, "sessions");
-      const newSessionRef = push(sessionsRef);
-      const sessionId = newSessionRef.key;
-
-      if (!sessionId) throw new Error("Session ID 생성 실패");
-
-      const initialSessionData = {
-        phase: "waiting",
-        turn: 0,
-        teams: {
-          red: {
-            name: teamRed,
-            players: [
-              { key: "8", nickname: "", connected: false },
-              { key: "9", nickname: "", connected: false },
-              { key: "12", nickname: "", connected: false },
-              { key: "17", nickname: "", connected: false },
-              { key: "20", nickname: "", connected: false },
-            ],
+    if (typeof window !== "undefined") {
+      try {
+        const database = getDatabaseInstance();
+        const sessionsRef = ref(database, "sessions");
+        const newSessionRef = push(sessionsRef);
+        const sessionId = newSessionRef.key;
+  
+        if (!sessionId) throw new Error("Session ID 생성 실패");
+  
+        const initialSessionData = {
+          phase: "waiting",
+          turn: 0,
+          teams: {
+            red: {
+              name: teamRed,
+              players: [
+                { key: "8", nickname: "", connected: false },
+                { key: "9", nickname: "", connected: false },
+                { key: "12", nickname: "", connected: false },
+                { key: "17", nickname: "", connected: false },
+                { key: "20", nickname: "", connected: false },
+              ],
+            },
+            blue: {
+              name: teamBlue,
+              players: [
+                { key: "7", nickname: "", connected: false },
+                { key: "10", nickname: "", connected: false },
+                { key: "11", nickname: "", connected: false },
+                { key: "18", nickname: "", connected: false },
+                { key: "19", nickname: "", connected: false },
+              ],
+            },
           },
-          blue: {
-            name: teamBlue,
-            players: [
-              { key: "7", nickname: "", connected: false },
-              { key: "10", nickname: "", connected: false },
-              { key: "11", nickname: "", connected: false },
-              { key: "18", nickname: "", connected: false },
-              { key: "19", nickname: "", connected: false },
-            ],
-          },
-        },
-        spectators: [],
-        banSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
-        pickSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
-        bannedChampions: [],
-        pickedChampions: [],
-      };
-
-      await update(newSessionRef, initialSessionData);
-
-      router.push(`/links/${sessionId}`);
-    } catch (error) {
-      console.error("세션 생성 중 오류가 발생했습니다:", error);
-      alert("세션 생성에 실패했습니다. 다시 시도해주세요.");
+          spectators: [],
+          banSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
+          pickSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
+          bannedChampions: [],
+          pickedChampions: [],
+        };
+  
+        await update(newSessionRef, initialSessionData);
+  
+        router.push(`/links/${sessionId}`);
+      } catch (error) {
+        console.error("세션 생성 중 오류가 발생했습니다:", error);
+        alert("세션 생성에 실패했습니다. 다시 시도해주세요.");
+      }
+    } else {
+      console.error("클라이언트 환경이 아닙니다.");
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-800 text-white flex flex-col justify-center items-center font-gong">
