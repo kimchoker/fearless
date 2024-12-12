@@ -1,5 +1,5 @@
 'use client'
-import { ref, update, onValue, push } from "firebase/database";
+import { ref, update, onValue } from "firebase/database";
 import database from "@/firebase/firebase";
 
 // 팀에 참가하는 함수
