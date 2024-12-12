@@ -1,6 +1,6 @@
 'use client'
 import { ref, update, onValue, push } from "firebase/database";
-import database from "./firebase";
+import database from "@/firebase/firebase";
 
 // 팀에 참가하는 함수
 export async function joinTeam(sessionId: string, team: string, nickname: string) {
@@ -23,7 +23,7 @@ export function subscribeToSession(sessionId: string, callback: any) {
 
 export const createSession = async (sessionData: { teamRed: string; teamBlue: string }) => {
   if (typeof window === "undefined") {
-    return
+    
   }
   const sessionsRef = ref(database, "sessions");
   const newSessionRef = push(sessionsRef); // 고유 세션 ID 생성
