@@ -28,4 +28,4 @@ const getFirebaseDatabase = (): Database => {
   return database;
 };
 
-export default getFirebaseDatabase;
+export default getFirebaseDatabase();
