@@ -1,6 +1,6 @@
 "use client";
 
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase, Database } from "firebase/database";
 
 const firebaseConfig = {
@@ -16,16 +16,33 @@ const firebaseConfig = {
 
 let database: Database | null = null;
 
-if (typeof window !== "undefined" && !getApps().length) {
-  const app = initializeApp(firebaseConfig);
-  database = getDatabase(app);
+// Firebase 초기화 함수
+const initializeFirebase = () => {
+  if (!getApps().length) {
+    const app = initializeApp(firebaseConfig);
+    database = getDatabase(app);
+  } else if (!database) {
+    const app = getApp();
+    database = getDatabase(app);
+  }
+};
+
+// 클라이언트 환경에서 Firebase 초기화
+if (typeof window !== "undefined") {
+  initializeFirebase();
 }
 
-const getFirebaseDatabase = (): Database => {
+// 안전한 Database 반환
+const getDatabaseInstance = (): Database => {
+  if (!database && typeof window !== "undefined") {
+    initializeFirebase();
+  }
   if (!database) {
     throw new Error("Firebase database has not been initialized.");
   }
   return database;
 };
 
-export default getFirebaseDatabase();
+const databaseInstance = getDatabaseInstance();
+
+export default databaseInstance;
