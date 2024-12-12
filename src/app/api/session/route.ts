@@ -1,21 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import admin from "firebase-admin";
-
-// Firebase Admin 초기화
-if (!admin.apps.length) {
-	const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS!);
-
-	admin.initializeApp({
-		credential: admin.credential.cert(serviceAccount),
-		databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL!,
-	});
-	
-}
-
-const database = admin.database();
+import adminDb from "@/firebase/firebaseAdmin";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!adminDb) {
+      throw new Error("Firebase Admin Database is not initialized");
+    }
+
     const body = await req.json();
     const { teamRed, teamBlue } = body;
 
@@ -23,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid input data" }, { status: 400 });
     }
 
-    const sessionsRef = database.ref("sessions");
+    const sessionsRef = adminDb.ref("sessions");
     const newSessionRef = sessionsRef.push();
     const sessionId = newSessionRef.key;
 
