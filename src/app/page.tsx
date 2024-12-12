@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ref, push, update } from "firebase/database";
-import database from "@/firebase/firebase";
+import { getDatabaseInstance } from "@/firebase/firebase";
 import { useRouter } from "next/navigation";
 
 const MainPage = () => {
@@ -19,8 +19,9 @@ const MainPage = () => {
     }
 
     try {
+      const database = getDatabaseInstance(); // 여기서 안전하게 가져옴
       const sessionsRef = ref(database, "sessions");
-      const newSessionRef = push(sessionsRef); // 고유 세션 ID 생성
+      const newSessionRef = push(sessionsRef);
       const sessionId = newSessionRef.key;
 
       if (!sessionId) throw new Error("Session ID 생성 실패");

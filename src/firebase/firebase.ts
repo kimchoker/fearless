@@ -17,7 +17,7 @@ const firebaseConfig = {
 let database: Database | null = null;
 
 // Firebase 초기화 함수
-const initializeFirebase = () => {
+const initializeFirebase = (): void => {
   if (!getApps().length) {
     const app = initializeApp(firebaseConfig);
     database = getDatabase(app);
@@ -32,8 +32,8 @@ if (typeof window !== "undefined") {
   initializeFirebase();
 }
 
-// 안전한 Database 반환
-const getDatabaseInstance = (): Database => {
+// Named export로 Database 반환 함수
+export const getDatabaseInstance = (): Database => {
   if (!database && typeof window !== "undefined") {
     initializeFirebase();
   }
@@ -43,6 +43,4 @@ const getDatabaseInstance = (): Database => {
   return database;
 };
 
-const databaseInstance = getDatabaseInstance();
-
-export default databaseInstance;
+export default getDatabaseInstance();
