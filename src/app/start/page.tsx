@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ref, push, update } from "firebase/database";
-import { getDatabaseInstance } from "@/firebase/firebase";
 import { useRouter } from "next/navigation";
 
 const StartPage = () => {
@@ -18,47 +16,21 @@ const StartPage = () => {
     }
 
     try {
-      const database = getDatabaseInstance();
-      const sessionsRef = ref(database, "sessions");
-      const newSessionRef = push(sessionsRef);
-      const sessionId = newSessionRef.key;
+      // 백엔드 API 호출
+      const response = await fetch("/api/create-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamRed, teamBlue }),
+      });
 
-      if (!sessionId) throw new Error("Session ID 생성 실패");
+      if (!response.ok) {
+        const { error } = await response.json();
+        throw new Error(error || "세션 생성 실패");
+      }
 
-      const initialSessionData = {
-        phase: "waiting",
-        turn: 0,
-        teams: {
-          red: {
-            name: teamRed,
-            players: [
-              { key: "8", nickname: "", connected: false },
-              { key: "9", nickname: "", connected: false },
-              { key: "12", nickname: "", connected: false },
-              { key: "17", nickname: "", connected: false },
-              { key: "20", nickname: "", connected: false },
-            ],
-          },
-          blue: {
-            name: teamBlue,
-            players: [
-              { key: "7", nickname: "", connected: false },
-              { key: "10", nickname: "", connected: false },
-              { key: "11", nickname: "", connected: false },
-              { key: "18", nickname: "", connected: false },
-              { key: "19", nickname: "", connected: false },
-            ],
-          },
-        },
-        spectators: [],
-        banSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
-        pickSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
-        bannedChampions: [],
-        pickedChampions: [],
-      };
+      const { sessionId } = await response.json();
 
-      await update(newSessionRef, initialSessionData);
-
+      // 세션 생성 후 이동
       router.push(`/links/${sessionId}`);
     } catch (error) {
       console.error("세션 생성 중 오류가 발생했습니다:", error);
