@@ -22,6 +22,9 @@ export function subscribeToSession(sessionId: string, callback: any) {
 
 
 export const createSession = async (sessionData: { teamRed: string; teamBlue: string }) => {
+  if (typeof window === "undefined") {
+    return
+  }
   const sessionsRef = ref(database, "sessions");
   const newSessionRef = push(sessionsRef); // 고유 세션 ID 생성
   const sessionId = newSessionRef.key;
