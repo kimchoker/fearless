@@ -1,4 +1,5 @@
-import { ref, update, onValue } from "firebase/database";
+'use client'
+import { ref, update, onValue, getDatabase, set } from "firebase/database";
 import database from "./firebase";
 
 // 팀에 참가하는 함수
@@ -18,3 +19,16 @@ export function subscribeToSession(sessionId: string, callback: any) {
 
   return unsubscribe;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createSession = async (sessionData: any) => {
+  const db = getDatabase();
+  const sessionId = Date.now().toString(); // 고유 ID 생성
+  const sessionRef = ref(db, `sessions/${sessionId}`);
+  await set(sessionRef, {
+    ...sessionData,
+    status: "waiting",
+    banpickData: {},
+  });
+  return sessionId;
+};

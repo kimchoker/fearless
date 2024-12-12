@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createSession } from "@/lib/sessions";
+import { createSession } from "@/firebase/firebaseApi";
 import { useRouter } from "next/navigation";
 
 const MainPage = () => {
