@@ -10,7 +10,7 @@ import BluePickSlot from "@/components/slots/BluePickSlot";
 import Image from "next/image";
 import ChampionList from "@/components/ChampionList";
 import { ref, onValue, update } from "firebase/database";
-import database from "@/firebase/firebase";
+import { getFirebaseDatabase } from "@/firebase/firebase";
 
 export default function BanpickUI({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = use(params); 
@@ -40,6 +40,8 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
     image: "",
     pickimg: "",
   };
+
+  const database = getFirebaseDatabase();
 
   // Firebase 데이터 가져오기 (팀 이름 및 진행 상태)
   const isTestMode = true;

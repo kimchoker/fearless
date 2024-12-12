@@ -1,6 +1,7 @@
-"use client"
+"use client";
+
 import { initializeApp, getApps } from "firebase/app";
-import { getDatabase } from "firebase/database";
+import { getDatabase, Database } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,11 +14,16 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-let database;
+let database: Database | null = null;
 
 if (typeof window !== "undefined" && !getApps().length) {
   const app = initializeApp(firebaseConfig);
   database = getDatabase(app);
 }
 
-export default database;
+export const getFirebaseDatabase = (): Database => {
+  if (!database) {
+    throw new Error("Firebase database has not been initialized.");
+  }
+  return database;
+};
