@@ -17,7 +17,7 @@ const StartPage = () => {
 
     try {
       // 백엔드 API 호출
-      const response = await fetch("/api/create-session", {
+      const response = await fetch("/api/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teamRed, teamBlue }),
