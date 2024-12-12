@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createSession } from "@/firebase/firebaseApi";
+// import { createSession } from "@/firebase/firebaseApi";
 import { useRouter } from "next/navigation";
 
 const MainPage = () => {
@@ -11,26 +11,26 @@ const MainPage = () => {
   const [nickname, setNickname] = useState("");
   const router = useRouter();
   
-  const handleCreateSession = async () => {
-    if (!teamRed || !teamBlue || !nickname) {
-      alert("모든 정보를 입력해주세요!");
-      return;
-    }
+  // const handleCreateSession = async () => {
+  //   if (!teamRed || !teamBlue || !nickname) {
+  //     alert("모든 정보를 입력해주세요!");
+  //     return;
+  //   }
   
-    try {
-      // 개선된 createSession 함수 호출
-      const sessionId = await createSession({ 
-        teamRed, 
-        teamBlue 
-      });
+  //   try {
+  //     // 개선된 createSession 함수 호출
+  //     const sessionId = await createSession({ 
+  //       teamRed, 
+  //       teamBlue 
+  //     });
   
-      // LinksPage로 이동
-      router.push(`/links/${sessionId}`);
-    } catch (error) {
-      console.error("세션 생성 중 오류가 발생했습니다:", error);
-      alert("세션 생성에 실패했습니다. 다시 시도해주세요.");
-    }
-  };
+  //     // LinksPage로 이동
+  //     router.push(`/links/${sessionId}`);
+  //   } catch (error) {
+  //     console.error("세션 생성 중 오류가 발생했습니다:", error);
+  //     alert("세션 생성에 실패했습니다. 다시 시도해주세요.");
+  //   }
+  // };
   
 
   return (
@@ -86,12 +86,12 @@ const MainPage = () => {
             placeholder="닉네임 입력"
             className="w-full mb-4 p-3 rounded border border-gray-500 text-black"
           />
-          <button
+          {/* <button
             onClick={handleCreateSession}
             className="w-full bg-green-500 py-3 rounded text-lg hover:bg-green-600 transition"
           >
             세션 생성
-          </button>
+          </button> */}
         </div>
       )}
     </div>
