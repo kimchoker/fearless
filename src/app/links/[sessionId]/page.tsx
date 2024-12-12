@@ -24,29 +24,31 @@ export default function LinksPage({ params }: { params: Promise<{ sessionId: str
   const [redTeamPlayers, setRedTeamPlayers] = useState<string[]>(Array(5).fill("대기 중"));
 
   useEffect(() => {
-    const sessionRef = ref(database, `sessions/${sessionId}/teams`);
+    const sessionRef = ref(database, `sessions/${sessionId}`);
     const unsubscribe = onValue(sessionRef, (snapshot) => {
       const data = snapshot.val();
-
+  
       if (data) {
-        const bluePlayers: Player[] = Object.values(data.blue?.players || {});
-        const redPlayers: Player[] = Object.values(data.red?.players || {});
-
-        const updatedBlueTeam = [...Array(5)].map(
-          (_, idx) => bluePlayers[idx]?.nickname || "대기 중"
-        );
-
-        const updatedRedTeam = [...Array(5)].map(
-          (_, idx) => redPlayers[idx]?.nickname || "대기 중"
-        );
-
-        setBlueTeamPlayers(updatedBlueTeam);
-        setRedTeamPlayers(updatedRedTeam);
+        const bluePlayers = Array.isArray(data.teams?.blue?.players)
+          ? data.teams.blue.players
+          : (Object.values(data.teams?.blue?.players || {}) as Player[]).map(
+              (player) => player.nickname || "대기 중"
+            );
+  
+        const redPlayers = Array.isArray(data.teams?.red?.players)
+          ? data.teams.red.players
+          : (Object.values(data.teams?.red?.players || {}) as Player[]).map(
+              (player) => player.nickname || "대기 중"
+            );
+  
+        setBlueTeamPlayers([...bluePlayers]);
+        setRedTeamPlayers([...redPlayers]);
       }
     });
-
+  
     return () => unsubscribe();
   }, [sessionId]);
+  
 
   useEffect(() => {
     const statusRef = ref(database, `sessions/${sessionId}/status`);

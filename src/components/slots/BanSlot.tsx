@@ -12,7 +12,7 @@ const BanSlot: React.FC<BanSlotProps & { isRipple: boolean }> = ({
 
   return (
     <div
-      className={`relative w-20 h-20 min-w-20 min-h-20 bg-gray-700 overflow-hidden space-x-1 ${pulseClass}`}
+      className={`relative w-[70px] h-[70px] min-w-[70px] min-h-[70px] bg-gray-700 overflow-hidden space-x-[2px] ${pulseClass}`}
       style={{
         backgroundImage: slotData
           ? `url(${slotData.image.replace("./", "/")})`

@@ -12,8 +12,8 @@ import ChampionList from "@/components/ChampionList";
 import { ref, onValue, update } from "firebase/database";
 import database from "@/firebase/firebase";
 
-export default function BanpickUI({ params }: { params: Promise<{ sessionId: string }> }) {
-  const { sessionId } = use(params); 
+export default function BanpickUI({ params }: { params: Promise<{ sessionId: string; playerKey: string }> }) {
+  const { sessionId, playerKey } = use(params); 
   const [redTeamName, setRedTeamName] = useState("레드 팀");
   const [blueTeamName, setBlueTeamName] = useState("블루 팀");
   const [redTeamMemberNames, setRedTeamMemberNames] = useState<string[]>(Array(5).fill("대기 중"));
@@ -31,8 +31,19 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
   const [bannedChampions, setBannedChampions] = useState<Champion[]>([]);
   const [pickedChampions, setPickedChampions] = useState<Champion[]>([]);
   const [selectedChampion, setSelectedChampion] = useState<Champion | null>(null);
-  const [rippleSlot, setRippleSlot] = useState<{ team: "blue" | "red"; turn: number } | null>(null);
-  const [timer, setTimer] = useState(30);
+  const [currentSelectedChampion, setCurrentSelectedChampion] = useState<Champion | null>(null);
+
+  useEffect(() => {
+    const selectedRef = ref(database, `sessions/${sessionId}/banpick/${currentPhase}/currentSelected`);
+    const unsubscribe = onValue(selectedRef, (snapshot) => {
+      const data = snapshot.val();
+      setCurrentSelectedChampion(data || null);
+    });
+  
+    return () => unsubscribe();
+  }, [sessionId, currentPhase]);
+
+  const [timer, setTimer] = useState(5);
 
   const NO_SELECTION: Champion = {
     id: -1,
@@ -40,6 +51,8 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
     image: "",
     pickimg: "",
   };
+
+  const currentTurnKey = phaseOrder[currentPhase][currentTurn]?.key;
 
   // Firebase 데이터 가져오기 (팀 이름 및 진행 상태)
   const isTestMode = true;
@@ -106,64 +119,61 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
 
   // 타임아웃 처리 로직
   const handleTimeOut = () => {
-    const phaseTurns = phaseOrder[currentPhase];
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const currentTurnInfo = phaseTurns[currentTurn];
+    handleConfirmSelection();
+  };
+  
 
-    if (currentPhase.startsWith("ban")) {
-      setSelectedChampion(NO_SELECTION);
-      handleConfirmSelection();
-    } else if (currentPhase.startsWith("pick")) {
+  // 선택 완료 핸들러
+  const handleConfirmSelection = () => {
+    let championToConfirm = selectedChampion;
+  
+    // 선택된 챔피언이 없을 경우, 랜덤으로 강제 선택
+    if (!championToConfirm && currentPhase.startsWith("pick")) {
       const availableChampions = champions.filter(
         (champion) =>
           !bannedChampions.some((banned) => banned.id === champion.id) &&
           !pickedChampions.some((picked) => picked.id === champion.id)
       );
-      const randomChampion = availableChampions[Math.floor(Math.random() * availableChampions.length)];
-      setSelectedChampion(randomChampion);
-      setTimeout(() => {
-        handleConfirmSelection();
-      }, 0);
+      championToConfirm =
+        availableChampions[
+          Math.floor(Math.random() * availableChampions.length)
+        ] || NO_SELECTION;
+  
+      setSelectedChampion(championToConfirm); // 상태에 반영
     }
-  };
-
-  // 선택 완료 핸들러
-  const handleConfirmSelection = () => {
-    if (!selectedChampion && currentPhase.startsWith("pick")) return;
-
+  
     const phaseTurns: PhaseTurn[] = phaseOrder[currentPhase];
     const currentTurnInfo: PhaseTurn = phaseTurns[currentTurn];
-
-    setRippleSlot(currentTurnInfo);
-    setTimeout(() => setRippleSlot(null), 800);
-
+  
+    // 밴 또는 픽 처리
     if (currentPhase.startsWith("ban")) {
-      setBannedChampions((prev) => [...prev, selectedChampion || NO_SELECTION]);
+      setBannedChampions((prev) => [...prev, championToConfirm || NO_SELECTION]);
       setBanSlots((prev) => {
         const updated = { ...prev };
         updated[currentTurnInfo.team][currentTurnInfo.turn % 5] =
-          selectedChampion || NO_SELECTION;
+          championToConfirm || NO_SELECTION;
         return updated;
       });
     } else if (currentPhase.startsWith("pick")) {
-      setPickedChampions((prev) => [...prev, selectedChampion!]);
+      setPickedChampions((prev) => [...prev, championToConfirm!]);
       setPickSlots((prev) => {
         const updated = { ...prev };
-        updated[currentTurnInfo.team][currentTurnInfo.turn % 5] = selectedChampion!;
+        updated[currentTurnInfo.team][currentTurnInfo.turn % 5] = championToConfirm!;
         return updated;
       });
     }
-
+  
     // Firebase에 업데이트
     update(ref(database, `sessions/${sessionId}/banpick`), {
       [`${currentPhase}/${currentTurn}`]: {
         team: currentTurnInfo.team,
-        champion: selectedChampion || NO_SELECTION,
+        champion: championToConfirm || NO_SELECTION,
       },
       currentPhase,
       currentTurn: currentTurn + 1,
     });
-
+  
+    // 다음 턴으로 이동
     const nextTurn = currentTurn + 1;
     if (nextTurn >= phaseTurns.length) {
       if (currentPhase === "ban1") setCurrentPhase("pick1");
@@ -174,71 +184,169 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
     } else {
       setCurrentTurn(nextTurn);
     }
-
-    setTimer(30);
+  
+    setTimer(5);
     setSelectedChampion(null);
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-200 text-black">
       <div className="flex items-center justify-between bg-gray-200 h-40">
-        <div className="flex items-start justify-center bg-blue-500 text-black font-bold text-3xl w-[45%] h-full font-gong">
+        <div className="flex items-start justify-center bg-blue-700 text-black font-bold text-3xl w-[45%] h-full font-gong">
           {blueTeamName}
         </div>
         <div className="flex items-center justify-center bg-gray-800 text-white font-bold text-3xl w-[10%] h-full font-gong">
           <div className="flex flex-col justify-center items-center">
             <h2 className="text-xl font-bold font-gong">{currentPhase.toUpperCase()}</h2>
-            {timer}
+            {currentPhase !== "complete" && timer}
           </div>
         </div>
-        <div className="flex items-start justify-center bg-red-500 text-black font-bold text-3xl w-[45%] h-full font-gong">
+        <div className="flex items-start justify-center bg-red-700 text-black font-bold text-3xl w-[45%] h-full font-gong">
           {redTeamName}
         </div>
       </div>
 
       <div className="flex flex-col items-center">
         <div className="flex justify-between w-full">
-          <div className="w-1/4">
-            {blueTeamMemberNames.map((name, idx) => (
-              <BluePickSlot
-                key={idx}
-                playerName={name}
-                slotData={pickSlots.blue[idx]}
+          {/* 블루 팀 */}
+          <div className="w-1/5">
+            {/* 픽 슬롯 */}
+            <BluePickSlot
+              key="7"
+              playerName={blueTeamMemberNames[0]}
+              slotData={pickSlots.blue[0]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "7"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "7"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <BluePickSlot
+              key="10"
+              playerName={blueTeamMemberNames[1]}
+              slotData={pickSlots.blue[1]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "10"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "10"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <BluePickSlot
+              key="11"
+              playerName={blueTeamMemberNames[2]}
+              slotData={pickSlots.blue[2]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "11"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "11"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <BluePickSlot
+              key="18"
+              playerName={blueTeamMemberNames[3]}
+              slotData={pickSlots.blue[3]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "18"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "18"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <BluePickSlot
+              key="19"
+              playerName={blueTeamMemberNames[4]}
+              slotData={pickSlots.blue[4]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "19"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "19"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+
+            {/* 밴 슬롯 */}
+            <div className="flex space-x-2 justify-center mt-2 w-[100%]">
+              <BanSlot
+                key="1"
+                slotData={banSlots.blue[0]}
                 isCurrentTurn={
-                  currentPhase.startsWith("pick") &&
-                  phaseOrder[currentPhase][currentTurn]?.team === "blue" &&
-                  phaseOrder[currentPhase][currentTurn]?.turn === idx
+                  phaseOrder[currentPhase][currentTurn]?.key === "1"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "1"
                 }
                 selectedChampion={selectedChampion}
-                isRipple={
-                  rippleSlot?.team === "blue" &&
-                  rippleSlot?.turn === idx &&
-                  currentPhase.startsWith("pick")
-                }
+                currentSelected={currentSelectedChampion}
+                
               />
-            ))}
-            <div className="flex space-x-2 justify-center mt-2 w-[100%]">
-              {banSlots.blue.map((slot, idx) => (
-                <BanSlot
-                  key={idx}
-                  slotData={slot}
-                  isCurrentTurn={
-                    currentPhase.startsWith("ban") &&
-                    phaseOrder[currentPhase][currentTurn]?.team === "blue" &&
-                    phaseOrder[currentPhase][currentTurn]?.turn === idx
-                  }
-                  isRipple={
-                    rippleSlot?.team === "blue" &&
-                    rippleSlot?.turn === idx &&
-                    currentPhase.startsWith("ban")
-                  }
-                  selectedChampion={selectedChampion}
-                />
-              ))}
+              <BanSlot
+                key="3"
+                slotData={banSlots.blue[1]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "3"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "3"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
+              <BanSlot
+                key="5"
+                slotData={banSlots.blue[2]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "5"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "5"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
+              <BanSlot
+                key="14"
+                slotData={banSlots.blue[3]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "14"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "14"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
+              <BanSlot
+                key="16"
+                slotData={banSlots.blue[4]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "16"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "16"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
             </div>
           </div>
 
-          <div className="w-1/2 flex flex-col items-center">
+
+          {/* 중앙 이미지 */}
+          <div className="w-3/5 flex flex-col items-center">
             <div className="flex justify-center items-center bg-gray-500 h-[90%] relative w-full">
               <Image
                 src="/main.jpg"
@@ -250,57 +358,157 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
             </div>
           </div>
 
-          <div className="w-1/4">
-            {redTeamMemberNames.map((name, idx) => (
-              <RedPickSlot
-                key={idx}
-                playerName={name}
-                slotData={pickSlots.red[idx]}
+          {/* 레드 팀 */}
+          <div className="w-1/5">
+            {/* 픽 슬롯 */}
+            <RedPickSlot
+              key="8"
+              playerName={redTeamMemberNames[0]}
+              slotData={pickSlots.red[0]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "8"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "8"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <RedPickSlot
+              key="9"
+              playerName={redTeamMemberNames[1]}
+              slotData={pickSlots.red[1]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "9"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "9"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <RedPickSlot
+              key="12"
+              playerName={redTeamMemberNames[2]}
+              slotData={pickSlots.red[2]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "12"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "12"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <RedPickSlot
+              key="17"
+              playerName={redTeamMemberNames[3]}
+              slotData={pickSlots.red[3]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "17"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "17"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+            <RedPickSlot
+              key="20"
+              playerName={redTeamMemberNames[4]}
+              slotData={pickSlots.red[4]}
+              isCurrentTurn={
+                phaseOrder[currentPhase][currentTurn]?.key === "20"
+              }
+              isRipple={
+                phaseOrder[currentPhase][currentTurn]?.ripple === "20"
+              }
+              selectedChampion={selectedChampion}
+              currentSelected={currentSelectedChampion}
+            />
+
+            {/* 밴 슬롯 */}
+            <div className="flex space-x-2 justify-center mt-4">
+              <BanSlot
+                key="2"
+                slotData={banSlots.red[0]}
                 isCurrentTurn={
-                  currentPhase.startsWith("pick") &&
-                  phaseOrder[currentPhase][currentTurn]?.team === "red" &&
-                  phaseOrder[currentPhase][currentTurn]?.turn === idx
+                  phaseOrder[currentPhase][currentTurn]?.key === "2"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "2"
                 }
                 selectedChampion={selectedChampion}
-                isRipple={
-                  rippleSlot?.team === "red" &&
-                  rippleSlot?.turn === idx &&
-                  currentPhase.startsWith("pick")
-                }
+                currentSelected={currentSelectedChampion}
               />
-            ))}
-            <div className="flex space-x-2 justify-center mt-4">
-              {banSlots.red.map((slot, idx) => (
-                <BanSlot
-                  key={idx}
-                  slotData={slot}
-                  isCurrentTurn={
-                    currentPhase.startsWith("ban") &&
-                    phaseOrder[currentPhase][currentTurn]?.team === "red" &&
-                    phaseOrder[currentPhase][currentTurn]?.turn === idx
-                  }
-                  isRipple={
-                    rippleSlot?.team === "red" &&
-                    rippleSlot?.turn === idx &&
-                    currentPhase.startsWith("ban")
-                  }
-                  selectedChampion={selectedChampion}
-                />
-              ))}
+              <BanSlot
+                key="4"
+                slotData={banSlots.red[1]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "4"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "4"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
+              <BanSlot
+                key="6"
+                slotData={banSlots.red[2]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "6"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "6"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
+              <BanSlot
+                key="13"
+                slotData={banSlots.red[3]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "13"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "13"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
+              <BanSlot
+                key="15"
+                slotData={banSlots.red[4]}
+                isCurrentTurn={
+                  phaseOrder[currentPhase][currentTurn]?.key === "15"
+                }
+                isRipple={
+                  phaseOrder[currentPhase][currentTurn]?.ripple === "15"
+                }
+                selectedChampion={selectedChampion}
+                currentSelected={currentSelectedChampion}
+              />
             </div>
           </div>
-        </div>
 
-        <div className="flex w-full justify-center items-center px-10 py-4">
-          <ChampionList
-            champions={champions}
-            bannedChampions={bannedChampions}
-            pickedChampions={pickedChampions}
-            onChampionClick={setSelectedChampion}
-            onConfirmSelection={handleConfirmSelection}
-          />
         </div>
       </div>
+
+
+      <div className="flex w-full justify-center items-center px-10 py-4">
+        <ChampionList
+          champions={champions}
+          bannedChampions={bannedChampions}
+          pickedChampions={pickedChampions}
+          onChampionClick={setSelectedChampion}
+          onConfirmSelection={handleConfirmSelection}
+          isDisabled={playerKey !== currentTurnKey}
+          sessionId={sessionId}
+          currentPhase={currentPhase}
+        />
+      </div>
     </div>
+
   );
 }

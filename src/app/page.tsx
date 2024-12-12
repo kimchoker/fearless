@@ -16,16 +16,22 @@ const MainPage = () => {
       alert("모든 정보를 입력해주세요!");
       return;
     }
-    
-    const sessionId = await createSession({
-      teamRed,
-      teamBlue,
-      participants: { red: [], blue: [] },
-    });
-
-    // LinksPage로 이동
-    router.push(`/links/${sessionId}`);
+  
+    try {
+      // 개선된 createSession 함수 호출
+      const sessionId = await createSession({ 
+        teamRed, 
+        teamBlue 
+      });
+  
+      // LinksPage로 이동
+      router.push(`/links/${sessionId}`);
+    } catch (error) {
+      console.error("세션 생성 중 오류가 발생했습니다:", error);
+      alert("세션 생성에 실패했습니다. 다시 시도해주세요.");
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-800 text-white flex flex-col justify-center items-center font-gong">
