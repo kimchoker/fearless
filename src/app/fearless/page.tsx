@@ -6,21 +6,16 @@ import { useBanpickStore } from "@/store/banpickStore";
 // import { useLogoStore } from "@/store/logoStore";
 import Image from "next/image";
 import html2canvas from "html2canvas";
+import { useState } from "react";
 
 export default function BroadcastPage() {
   const games = useBanpickStore((state) => state.games);
   const gameEntries = Object.entries(games);
-  // const { logo, setLogo } = useLogoStore();
-  // const [logoPreview, setLogoPreview] = useState<string | null>(logo);
+  const [showChampionNames, setShowChampionNames] = useState(false);
 
-  // const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     const file = e.target.files[0];
-  //     const previewUrl = URL.createObjectURL(file);
-  //     setLogoPreview(previewUrl);
-  //     setLogo(previewUrl);
-  //   }
-  // };
+  const toggleChampionNames = () => {
+    setShowChampionNames((prev) => !prev);
+  };
 
   const handleCaptureAndSave = async () => {
     const captureElement = document.getElementById("broadcast-capture-area");
@@ -42,7 +37,6 @@ export default function BroadcastPage() {
     link.click();
   };
 
-
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-start bg-gray-700 text-white font-gong"
@@ -50,9 +44,8 @@ export default function BroadcastPage() {
       {/* 방송 화면 영역 */}
       <div
         id="broadcast-capture-area"
-        className='flex bg-gray-700 items-center justify-center mb-3'
+        className='flex bg-gray-700 items-center justify-center mb-10'
       >
-
 
         {/* 왼쪽 (블루 팀) */}
         <div className="flex flex-col w-full gap-y-4 p-10 items-center">
@@ -64,18 +57,20 @@ export default function BroadcastPage() {
                 {[...Array(5)].map((_, index) => {
                   const champion = gameData.blue[index];
                   return champion ? (
-                    <Image
-                      key={`blue-${gameId}-${champion.id}`} // 고유 키 생성
-                      src={champion.image.replace("./", "/")}
-                      alt={champion.name}
-                      width={50}
-                      height={50}
-                      className="rounded min-w-[50px] min-h-[50px]"
-                    />
+                    <div key={`blue-${gameId}-${champion.id}`} className="flex flex-col items-center">
+                      <Image
+                        src={champion.image.replace("./", "/")}
+                        alt={champion.name}
+                        width={60}
+                        height={60}
+                        className="rounded min-w-[50px] min-h-[50px]"
+                      />
+                      {showChampionNames && <p className="text-xs mt-1">{champion.name}</p>}
+                    </div>
                   ) : (
                     <div
                       key={`blue-slot-${gameId}-${index}`} // 빈 슬롯에도 고유 키 생성
-                      className="w-[50px] h-[50px] bg-gray-800 border-gray-400 rounded min-w-[50px] min-h-[50px]"
+                      className="w-[60px] h-[60px] bg-gray-800 border-gray-400 rounded min-w-[60px] min-h-[60px]"
                     />
                   );
                 })}
@@ -94,7 +89,6 @@ export default function BroadcastPage() {
         </div> */}
 
         {/* 오른쪽 (레드 팀) */}
-        
         <div className="flex flex-col w-full gap-y-4 px-10 p-10 items-center">
           <h1 className="text-2xl font-bold text-red-500">RED</h1>
           {gameEntries.map(([gameId, gameData]) => (
@@ -104,20 +98,21 @@ export default function BroadcastPage() {
                 {[...Array(5)].map((_, index) => {
                   const champion = gameData.red[index];
                   return champion ? (
-                    <Image
-                      key={`red-${gameId}-${champion.id}`} // 고유 키 생성
-                      src={champion.image.replace("./", "/")}
-                      alt={champion.name}
-                      width={50}
-                      height={50}
-                      className="rounded"
-                    />
+                    <div key={`red-${gameId}-${champion.id}`} className="flex flex-col items-center">
+                      <Image
+                        src={champion.image.replace("./", "/")}
+                        alt={champion.name}
+                        width={60}
+                        height={60}
+                        className="rounded"
+                      />
+                      {showChampionNames && <p className="text-xs mt-1">{champion.name}</p>}
+                    </div>
                   ) : (
                     <div
                       key={`red-slot-${gameId}-${index}`} // 빈 슬롯에도 고유 키 생성
-                      className="w-[50px] h-[50px] bg-gray-800 border-gray-400 rounded min-w-[50px] min-h-[50px]"
+                      className="w-[60px] h-[60px] bg-gray-800 border-gray-400 rounded min-w-[60px] min-h-[60px]"
                     />
-                    
                   );
                 })}
               </div>
@@ -128,23 +123,28 @@ export default function BroadcastPage() {
 
       {/* UI 하단 */}
       <div className="flex flex-col items-center justify-center space-y-4 mt-8">
-        {/* 로고 업로드 */}
-        {/* <label className="bg-gray-400 px-4 py-2 rounded cursor-pointer hover:bg-gray-900">
-          로고 업로드하기
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleLogoUpload}
-          />
-        </label> */}
+        {/* 챔피언 이름 토글 버튼 */}
+        <button
+          onClick={toggleChampionNames}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          {showChampionNames ? "챔피언 이름 숨기기" : "챔피언 이름 보기"}
+        </button>
 
         {/* 캡처 저장 버튼 */}
         <button
           onClick={handleCaptureAndSave}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          화면 캡처 저장하기
+          피어리스 이미지로 저장
+        </button>
+
+         {/* 설정 페이지로 돌아가기 버튼 */}
+         <button
+          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+          onClick={() => window.location.href = "/settings"}
+        >
+          설정 페이지로 돌아가기
         </button>
       </div>
     </div>
