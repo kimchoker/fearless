@@ -5,7 +5,7 @@ let adminDb: admin.database.Database | null = null;
 if (!admin.apps.length) {
   const serviceAccount: ServiceAccount = {
     projectId: process.env.FIREBASE_ADMIN_PROJECT_ID!,
-    privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY!.replace(/\\n/g, "\n"), // Vercel 형식에 맞춰 \n 변환
+    privateKey: (process.env.FIREBASE_ADMIN_PRIVATE_KEY! as string).replace(/\\n/g, '\n'),
     clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL!,
   };
 
@@ -20,3 +20,4 @@ if (!admin.apps.length) {
 }
 
 export default adminDb;
+
