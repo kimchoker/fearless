@@ -2,7 +2,7 @@
 
 import React, { use } from "react";
 import { useState, useEffect } from "react";
-import { ref, push, onValue } from "firebase/database";
+import { ref, onValue, update, get } from "firebase/database";
 import database from "@/firebase/firebase";
 import { useRouter } from "next/navigation";
 import { Player } from "@/types/types";
@@ -50,17 +50,45 @@ export default function TeamPage({ params }: { params: Promise<{ sessionId: stri
 
   const handleJoin = async () => {
     if (!nickname) return;
-
+  
     // 닉네임 중복 체크
     if (existingNicknames.includes(nickname)) {
       alert("이미 참여한 닉네임입니다. 다른 닉네임을 입력해주세요.");
       return;
     }
-
+  
     const playersRef = ref(database, `sessions/${sessionId}/teams/${team}/players`);
-    await push(playersRef, { nickname, connected: true });
-    setIsReady(true); // 준비 상태로 설정
+  
+    try {
+      // players 데이터 가져오기
+      const snapshot = await get(playersRef);
+  
+      if (snapshot.exists()) {
+        const players = snapshot.val();
+  
+        // 닉네임이 비어있는 첫 번째 인덱스를 찾기
+        const emptyIndex = Object.keys(players).find(
+          (key) => players[key].nickname === ""
+        );
+  
+        if (emptyIndex !== undefined) {
+          // 닉네임 업데이트
+          await update(ref(database, `sessions/${sessionId}/teams/${team}/players/${emptyIndex}`), {
+            nickname,
+            connected: true,
+          });
+          setIsReady(true); // 준비 상태로 설정
+        } else {
+          alert("참여 가능한 자리가 없습니다.");
+        }
+      } else {
+        alert("플레이어 데이터를 찾을 수 없습니다.");
+      }
+    } catch (error) {
+      console.error("플레이어 데이터를 업데이트하는 중 오류가 발생했습니다:", error);
+    }
   };
+  
 
   return (
     <div className="bg-gray-700 flex flex-col justify-center items-center min-h-screen font-gong text-white">
