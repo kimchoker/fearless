@@ -11,8 +11,10 @@ if (!admin.apps.length) {
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: process.env.DATABASE_URL!,
+    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL!,
   });
+  console.log("Firebase Admin Apps:", admin.apps.length);
+
 
   adminDb = admin.database();
 } else {
