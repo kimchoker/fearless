@@ -18,8 +18,11 @@ export async function POST(req: NextRequest) {
     const newSessionRef = sessionsRef.push();
     const sessionId = newSessionRef.key;
 
-    if (!sessionId) throw new Error("Session ID creation failed");
+    if (!sessionId) {
+      throw new Error("Session ID creation failed");
+    }
 
+    // 모든 데이터를 한 번에 저장
     const initialSessionData = {
       phase: "waiting",
       turn: 0,
@@ -45,14 +48,22 @@ export async function POST(req: NextRequest) {
           ],
         },
       },
-      spectators: [],
-      banSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
-      pickSlots: { red: [null, null, null, null, null], blue: [null, null, null, null, null] },
-      bannedChampions: [],
-      pickedChampions: [],
+      spectators: ["empty"], // 빈 배열은 안전합니다.
+      banSlots: {
+        red: ["empty", "empty", "empty", "empty", "empty"], // null 대신 "empty"를 사용
+        blue: ["empty", "empty", "empty", "empty", "empty"],
+      },
+      pickSlots: {
+        red: ["empty", "empty", "empty", "empty", "empty"],
+        blue: ["empty", "empty", "empty", "empty", "empty"],
+      },
+      bannedChampions: ["empty", "empty", "empty", "empty", "empty"], // 빈 배열은 허용됩니다.
+      pickedChampions: ["empty", "empty", "empty", "empty", "empty"], // 빈 배열은 허용됩니다.
     };
 
-    await newSessionRef.update(initialSessionData);
+    await newSessionRef.set(initialSessionData); // 데이터를 한 번에 저장
+
+    console.log("Data successfully saved:", sessionId);
 
     return NextResponse.json({ sessionId }, { status: 201 });
   } catch (error) {

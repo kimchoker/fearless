@@ -69,6 +69,7 @@ export interface BanpickUIProps {
 export interface Player {
   nickname: string;
   connected: boolean;
+  key: string;
 }
 
 export interface BroadcastPageProps {

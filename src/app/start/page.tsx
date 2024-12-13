@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+
 const StartPage = () => {
   const [teamRed, setTeamRed] = useState("");
   const [teamBlue, setTeamBlue] = useState("");

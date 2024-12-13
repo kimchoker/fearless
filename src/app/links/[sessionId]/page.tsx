@@ -20,9 +20,9 @@ export default function LinksPage({ params }: { params: Promise<{ sessionId: str
     spectator: false,
   });
 
-  const [blueTeamPlayers, setBlueTeamPlayers] = useState<string[]>(Array(5).fill("대기 중"));
-  const [redTeamPlayers, setRedTeamPlayers] = useState<string[]>(Array(5).fill("대기 중"));
-
+  const [blueTeamPlayers, setBlueTeamPlayers] = useState<Player[]>([]);
+  const [redTeamPlayers, setRedTeamPlayers] = useState<Player[]>([]);
+  
   useEffect(() => {
     const sessionRef = ref(database, `sessions/${sessionId}`);
     const unsubscribe = onValue(sessionRef, (snapshot) => {
@@ -72,8 +72,8 @@ export default function LinksPage({ params }: { params: Promise<{ sessionId: str
     );
   };
 
-  const isAllReady = blueTeamPlayers.every((player) => player !== "대기 중") &&
-                     redTeamPlayers.every((player) => player !== "대기 중");
+  const isAllReady = blueTeamPlayers.every((player) => player.nickname !== "대기 중") &&
+                     redTeamPlayers.every((player) => player.nickname !== "대기 중");
 
   const handleStartBanPick = () => {
     if (isAllReady) {
@@ -156,9 +156,9 @@ export default function LinksPage({ params }: { params: Promise<{ sessionId: str
           <div>
             <h3 className="text-blue-500 mb-2">블루 팀</h3>
             <ul className="list-disc pl-6">
-              {blueTeamPlayers.map((player, idx) => (
-                <li key={`blue-${idx}`}>{player}</li>
-              ))}
+            {blueTeamPlayers.map((player, idx) => (
+              <li key={`blue-${idx}`}>{player.nickname || "대기 중"}</li>
+            ))}
             </ul>
           </div>
 
@@ -166,9 +166,9 @@ export default function LinksPage({ params }: { params: Promise<{ sessionId: str
           <div>
             <h3 className="text-red-500 mb-2">레드 팀</h3>
             <ul className="list-disc pl-6">
-              {redTeamPlayers.map((player, idx) => (
-                <li key={`red-${idx}`}>{player}</li>
-              ))}
+            {redTeamPlayers.map((player, idx) => (
+              <li key={`red-${idx}`}>{player.nickname || "대기 중"}</li>
+            ))}
             </ul>
           </div>
         </div>
