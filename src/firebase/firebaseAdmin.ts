@@ -4,7 +4,7 @@ let adminDb: admin.database.Database | null = null;
 
 if (!admin.apps.length) {
   const serviceAccount: ServiceAccount = {
-    projectId: process.env.PROJECT_ID!,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
     privateKey: (process.env.PRIVATE_KEY! as string).replace(/\\n/g, "\n"),
     clientEmail: process.env.CLIENT_EMAIL!,
   };
