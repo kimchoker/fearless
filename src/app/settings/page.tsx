@@ -140,7 +140,7 @@ export default function SettingsPage() {
           <div className="grid grid-cols-2 gap-4">
             {/* Red Team */}
             <div className="bg-red-700 p-4 rounded">
-              <h3 className="text-lg mb-2">Red Team</h3>
+              <h3 className="text-lg mb-2">Red</h3>
               <div
                 className="grid grid-cols-5 gap-2 min-h-[80px] bg-red-700 p-2 rounded"
                 onDragOver={(e) => e.preventDefault()}
@@ -180,7 +180,7 @@ export default function SettingsPage() {
 
             {/* Blue Team */}
             <div className="bg-blue-700 p-4 rounded">
-              <h3 className="text-lg mb-2">Blue Team</h3>
+              <h3 className="text-lg mb-2">Blue</h3>
               <div
                 className="grid grid-cols-5 gap-2 min-h-[80px] bg-blue-700 p-2 rounded"
                 onDragOver={(e) => e.preventDefault()}

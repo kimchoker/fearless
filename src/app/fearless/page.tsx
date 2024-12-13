@@ -1,26 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+// import { useState } from "react";
 import { useBanpickStore } from "@/store/banpickStore";
-import { useLogoStore } from "@/store/logoStore";
+// import { useLogoStore } from "@/store/logoStore";
 import Image from "next/image";
 import html2canvas from "html2canvas";
 
 export default function BroadcastPage() {
   const games = useBanpickStore((state) => state.games);
   const gameEntries = Object.entries(games);
-  const { logo, setLogo } = useLogoStore();
-  const [logoPreview, setLogoPreview] = useState<string | null>(logo);
+  // const { logo, setLogo } = useLogoStore();
+  // const [logoPreview, setLogoPreview] = useState<string | null>(logo);
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const previewUrl = URL.createObjectURL(file);
-      setLogoPreview(previewUrl);
-      setLogo(previewUrl);
-    }
-  };
+  // const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     const file = e.target.files[0];
+  //     const previewUrl = URL.createObjectURL(file);
+  //     setLogoPreview(previewUrl);
+  //     setLogo(previewUrl);
+  //   }
+  // };
 
   const handleCaptureAndSave = async () => {
     const captureElement = document.getElementById("broadcast-capture-area");
@@ -29,9 +29,10 @@ export default function BroadcastPage() {
       return;
     }
 
+    const rect = captureElement.getBoundingClientRect();
     const canvas = await html2canvas(captureElement, {
-      width: 1920,
-      height: 400,
+      width: rect.width,
+      height: rect.height,
       useCORS: true,
     });
 
@@ -41,21 +42,25 @@ export default function BroadcastPage() {
     link.click();
   };
 
+
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-start bg-gray-700 text-white p-4 font-gong"
+      className="min-h-screen flex flex-col items-center justify-start bg-gray-700 text-white font-gong"
     >
       {/* 방송 화면 영역 */}
       <div
         id="broadcast-capture-area"
-        className="grid grid-cols-3 w-[1920px] h-[200px] bg-gray-700 px-10 justify-between items-start"
+        className='flex bg-gray-700 items-center justify-center mb-3'
       >
+
+
         {/* 왼쪽 (블루 팀) */}
-        <div className="grid grid-cols-2 grid-rows-2 w-full gap-y-2">
+        <div className="flex flex-col w-full gap-y-4 p-10 items-center">
+          <h1 className="text-2xl font-bold text-blue-500">BLUE</h1>
           {gameEntries.map(([gameId, gameData]) => (
-            <div key={gameId} className="text-left">
+            <div key={gameId} className="text-right">
               <h2>{gameId.toUpperCase()}</h2>
-              <div className="flex flex-row">
+              <div className="flex flex-row p-2">
                 {[...Array(5)].map((_, index) => {
                   const champion = gameData.blue[index];
                   return champion ? (
@@ -65,65 +70,66 @@ export default function BroadcastPage() {
                       alt={champion.name}
                       width={50}
                       height={50}
-                      className="rounded"
+                      className="rounded min-w-[50px] min-h-[50px]"
                     />
                   ) : (
                     <div
                       key={`blue-slot-${gameId}-${index}`} // 빈 슬롯에도 고유 키 생성
-                      className="w-10 h-10 bg-gray-300 border rounded"
+                      className="w-[50px] h-[50px] bg-gray-800 border-gray-400 rounded min-w-[50px] min-h-[50px]"
                     />
                   );
                 })}
               </div>
             </div>
           ))}
-
         </div>
 
         {/* 중앙 로고 */}
-        <div className="flex justify-center items-center w-full">
+        {/* <div className='flex justify-center items-center w-full'>
           {logoPreview ? (
-            <img src={logoPreview} alt="로고" className="w-36 h-36 rounded" />
+            <img src={logoPreview} alt="" className="w-36 h-36 rounded" />
           ) : (
-            <p>로고 없음</p>
+            <div className="w-36 h-36"></div>
           )}
-        </div>
+        </div> */}
 
         {/* 오른쪽 (레드 팀) */}
-        <div className="grid grid-cols-2 grid-rows-2 w-full gap-y-2">
-        {gameEntries.map(([gameId, gameData]) => (
-          <div key={gameId} className="text-left">
-            <h2>{gameId.toUpperCase()}</h2>
-            <div className="flex flex-row">
-              {[...Array(5)].map((_, index) => {
-                const champion = gameData.red[index];
-                return champion ? (
-                  <Image
-                    key={`red-${gameId}-${champion.id}`} // 고유 키 생성
-                    src={champion.image.replace("./", "/")}
-                    alt={champion.name}
-                    width={50}
-                    height={50}
-                    className="rounded"
-                  />
-                ) : (
-                  <div
-                    key={`red-slot-${gameId}-${index}`} // 빈 슬롯에도 고유 키 생성
-                    className="w-10 h-10 bg-gray-300 border rounded"
-                  />
-                );
-              })}
+        
+        <div className="flex flex-col w-full gap-y-4 px-10 p-10 items-center">
+          <h1 className="text-2xl font-bold text-red-500">RED</h1>
+          {gameEntries.map(([gameId, gameData]) => (
+            <div key={gameId} className="text-left">
+              <h2>{gameId.toUpperCase()}</h2>
+              <div className="flex flex-row p-2">
+                {[...Array(5)].map((_, index) => {
+                  const champion = gameData.red[index];
+                  return champion ? (
+                    <Image
+                      key={`red-${gameId}-${champion.id}`} // 고유 키 생성
+                      src={champion.image.replace("./", "/")}
+                      alt={champion.name}
+                      width={50}
+                      height={50}
+                      className="rounded"
+                    />
+                  ) : (
+                    <div
+                      key={`red-slot-${gameId}-${index}`} // 빈 슬롯에도 고유 키 생성
+                      className="w-[50px] h-[50px] bg-gray-800 border-gray-400 rounded min-w-[50px] min-h-[50px]"
+                    />
+                    
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
-
+          ))}
         </div>
       </div>
 
       {/* UI 하단 */}
-      <div className="flex flex-col items-center space-y-4 mt-8">
+      <div className="flex flex-col items-center justify-center space-y-4 mt-8">
         {/* 로고 업로드 */}
-        <label className="bg-gray-400 px-4 py-2 rounded cursor-pointer hover:bg-gray-900">
+        {/* <label className="bg-gray-400 px-4 py-2 rounded cursor-pointer hover:bg-gray-900">
           로고 업로드하기
           <input
             type="file"
@@ -131,7 +137,7 @@ export default function BroadcastPage() {
             className="hidden"
             onChange={handleLogoUpload}
           />
-        </label>
+        </label> */}
 
         {/* 캡처 저장 버튼 */}
         <button
