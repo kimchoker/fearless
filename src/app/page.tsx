@@ -12,14 +12,9 @@ const MainPage = () => {
           onClick={() => router.push("/settings")}
           className="bg-blue-500 px-4 py-2 rounded text-white hover:bg-blue-600 transition"
         >
-          Settings
+          피어리스 밴 이미지 만들기
         </button>
-        <button
-          onClick={() => router.push("/fearless")}
-          className="bg-green-500 px-4 py-2 rounded text-white hover:bg-green-600 transition"
-        >
-          Fearless
-        </button>
+
       </div>
 
       <div className="flex flex-col space-y-4">
