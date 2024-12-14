@@ -81,9 +81,9 @@ export default function TeamPage({ params }: { params: Promise<{ sessionId: stri
         if (emptyIndex !== undefined) {
           // 닉네임 업데이트
           await update(ref(database, `sessions/${sessionId}/teams/${team}/players/${emptyIndex}`), {
-            nickname
+            nickname,
           });
-          
+  
           // 업데이트된 데이터 가져오기
           const updatedSnapshot = await get(
             ref(database, `sessions/${sessionId}/teams/${team}/players/${emptyIndex}`)
@@ -92,10 +92,9 @@ export default function TeamPage({ params }: { params: Promise<{ sessionId: stri
           if (updatedSnapshot.exists()) {
             const updatedPlayer = updatedSnapshot.val();
             const playerKey = updatedPlayer.key;
-            console.log("내 닉네임이 업데이트된 키:", playerKey);
-            console.log("업데이트된 플레이어 데이터:", updatedPlayer);
-            setIdxKey(emptyIndex);
-            setPlayerKey(playerKey);
+            setIdxKey(emptyIndex); // 인덱스 키 업데이트
+            setPlayerKey(playerKey); // playerKey 설정
+            setIsReady(false); // "준비 상태" 초기화 (닉네임 설정 완료 후 준비 상태가 되지 않은 상태)
           }
         } else {
           alert("참여 가능한 자리가 없습니다.");
@@ -107,6 +106,7 @@ export default function TeamPage({ params }: { params: Promise<{ sessionId: stri
       console.error("플레이어 데이터를 업데이트하는 중 오류가 발생했습니다:", error);
     }
   };
+  
 
   const handleReady = async () => {
     if (!idxKey) return;
@@ -168,7 +168,7 @@ export default function TeamPage({ params }: { params: Promise<{ sessionId: stri
               ? "bg-yellow-500 hover:bg-yellow-600"
               : "bg-gray-500 cursor-not-allowed"
           }`}
-          disabled={isReady} // 준비 상태이거나 닉네임이 설정되지 않았을 경우 비활성화
+          disabled={!playerKey || isReady} // 준비 상태이거나 닉네임이 설정되지 않았을 경우 비활성화
         >
           {isReady ? "시작 대기 중" : "밴픽 준비 완료"}
         </button>
