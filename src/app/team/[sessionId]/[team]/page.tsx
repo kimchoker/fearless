@@ -53,6 +53,11 @@ export default function TeamPage({ params }: { params: Promise<{ sessionId: stri
     return () => unsubscribe();
   }, [sessionId, router]);
 
+  useEffect(() => {
+    if (playerKey) {
+      console.log("key updated");
+    }
+  }, [playerKey]);
 
 
   const handleSetNickname = async () => {
@@ -91,10 +96,13 @@ export default function TeamPage({ params }: { params: Promise<{ sessionId: stri
   
           if (updatedSnapshot.exists()) {
             const updatedPlayer = updatedSnapshot.val();
-            const playerKey = updatedPlayer.key;
+            const updatedPlayerKey = updatedPlayer.key;
             setIdxKey(emptyIndex); // 인덱스 키 업데이트
-            setPlayerKey(playerKey); // playerKey 설정
+            setPlayerKey(updatedPlayerKey); // playerKey 설정
             setIsReady(false); // "준비 상태" 초기화 (닉네임 설정 완료 후 준비 상태가 되지 않은 상태)
+
+            console.log("내 플레이어 키", updatedPlayerKey)
+          
           }
         } else {
           alert("참여 가능한 자리가 없습니다.");
