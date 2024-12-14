@@ -55,7 +55,7 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
   const currentTurnKey = phaseOrder[currentPhase][currentTurn]?.key;
 
   // Firebase 데이터 가져오기 (팀 이름 및 진행 상태)
-  const isTestMode = true;
+  const isTestMode = playerKey ==="test";
 
   useEffect(() => {
     if (isTestMode) {
