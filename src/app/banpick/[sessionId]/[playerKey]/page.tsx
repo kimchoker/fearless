@@ -43,7 +43,7 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
     return () => unsubscribe();
   }, [sessionId, currentPhase]);
 
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(30);
 
   const NO_SELECTION: Champion = {
     id: -1,
@@ -185,24 +185,29 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
       setCurrentTurn(nextTurn);
     }
   
-    setTimer(5);
+    setTimer(30);
     setSelectedChampion(null);
   };
   
 
   return (
-    <div className="min-h-screen bg-gray-200 text-black">
-      <div className="flex items-center justify-between bg-gray-200 h-40">
-        <div className="flex items-start justify-center bg-blue-700 text-black font-bold text-3xl w-[45%] h-full font-gong">
+    <div className="min-h-screen bg-gray-200 text-black aspect-[16/9]">
+      <div className="flex items-center justify-between bg-gray-200 h-40 ">
+        <div className="flex items-center justify-center bg-blue-700 text-gray-200 font-bold text-5xl w-[45%] h-full font-gong">
           {blueTeamName}
         </div>
-        <div className="flex items-center justify-center bg-gray-800 text-white font-bold text-3xl w-[10%] h-full font-gong">
+        <div className="flex items-center justify-center bg-gray-800 text-white font-bold text-5xl w-[10%] h-full font-gong">
           <div className="flex flex-col justify-center items-center">
-            <h2 className="text-xl font-bold font-gong">{currentPhase.toUpperCase()}</h2>
-            {currentPhase !== "complete" && timer}
+            <h2 className="text-2xl font-gong mb-4">
+              {currentPhase === "ban1" && "BAN PHASE 1"}
+              {currentPhase === "pick1" && "PICK PHASE 1"}
+              {currentPhase === "ban2" && "BAN PHASE 2"}
+              {currentPhase === "pick2" && "PICK PHASE 2"}
+            </h2>
+            {currentPhase !== "complete" && `:${timer}`}
           </div>
         </div>
-        <div className="flex items-start justify-center bg-red-700 text-black font-bold text-3xl w-[45%] h-full font-gong">
+        <div className="flex items-center justify-center bg-red-700 text-gray-200 font-bold text-5xl w-[45%] h-full font-gong">
           {redTeamName}
         </div>
       </div>
@@ -210,7 +215,7 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
       <div className="flex flex-col items-center">
         <div className="flex justify-between w-full">
           {/* 블루 팀 */}
-          <div className="w-1/5">
+          <div className="w-1/4">
             {/* 픽 슬롯 */}
             <BluePickSlot
               key="7"
@@ -279,7 +284,7 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
             />
 
             {/* 밴 슬롯 */}
-            <div className="flex space-x-2 justify-center mt-2 w-[100%]">
+            <div className="flex justify-center w-[100%] mt-5">
               <BanSlot
                 key="1"
                 slotData={banSlots.blue[0]}
@@ -345,25 +350,39 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
           </div>
 
           
-          {/* 중앙 이미지 */}
-          {
-
-
-          }
-          <div className="w-3/5 flex flex-col items-center">
-            <div className="flex justify-center items-center bg-gray-500 h-[90%] relative w-full">
-              <Image
-                src="/main.jpg"
-                alt="중앙 광고 이미지"
-                layout="fill"
-                objectFit="cover"
-                className="rounded"
-              />
-            </div>
+          {/* 중앙 이미지 및 챔피언 리스트 조건부 렌더링*/}
+          <div className="w-1/2 flex flex-col items-center">
+            {playerKey === "99" ? (
+              // 관전자인 경우 중앙 광고 이미지 렌더링
+              <div className="flex justify-center items-center bg-gray-500 h-[90%] relative w-full">
+                <Image
+                  src="/main.jpg"
+                  alt="중앙 광고 이미지"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded"
+                />
+              </div>
+            ) : (
+              // 플레이어인 경우 ChampionList 렌더링
+              <div className="flex w-full justify-center items-center">
+                <ChampionList
+                  champions={champions}
+                  bannedChampions={bannedChampions}
+                  pickedChampions={pickedChampions}
+                  onChampionClick={setSelectedChampion}
+                  onConfirmSelection={handleConfirmSelection}
+                  isDisabled={playerKey !== currentTurnKey}
+                  sessionId={sessionId}
+                  currentPhase={currentPhase}
+                />
+              </div>
+            )}
           </div>
 
+
           {/* 레드 팀 */}
-          <div className="w-1/5">
+          <div className="w-1/4">
             {/* 픽 슬롯 */}
             <RedPickSlot
               key="8"
@@ -432,7 +451,7 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
             />
 
             {/* 밴 슬롯 */}
-            <div className="flex space-x-2 justify-center mt-4">
+            <div className="flex justify-center mt-5">
               <BanSlot
                 key="2"
                 slotData={banSlots.red[0]}
@@ -497,20 +516,6 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
           </div>
 
         </div>
-      </div>
-
-
-      <div className="flex w-full justify-center items-center px-10 py-4">
-        <ChampionList
-          champions={champions}
-          bannedChampions={bannedChampions}
-          pickedChampions={pickedChampions}
-          onChampionClick={setSelectedChampion}
-          onConfirmSelection={handleConfirmSelection}
-          isDisabled={playerKey !== currentTurnKey}
-          sessionId={sessionId}
-          currentPhase={currentPhase}
-        />
       </div>
     </div>
 

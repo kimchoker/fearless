@@ -13,7 +13,7 @@ const BluePickSlot: React.FC<PickSlotProps & { isRipple: boolean }> = ({
 
   return (
     <div
-      className={`relative bg-gray-700 h-40 flex items-center px-2 overflow-hidden ${pulseClass}`}
+      className={`relative bg-gray-700 h-44 flex items-center px-2 overflow-hidden ${pulseClass}`}
       style={{
         backgroundImage: slotData?.pickimg
           ? `url(${slotData.pickimg.replace("./", "/")})`

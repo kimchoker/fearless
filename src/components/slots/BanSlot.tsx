@@ -12,7 +12,7 @@ const BanSlot: React.FC<BanSlotProps & { isRipple: boolean }> = ({
 
   return (
     <div
-      className={`relative w-[70px] h-[70px] min-w-[70px] min-h-[70px] bg-gray-700 overflow-hidden space-x-[2px] ${pulseClass}`}
+      className={`relative flex-grow bg-gray-700 overflow-hidden border-r border-gray-500 ${pulseClass}`}
       style={{
         backgroundImage: slotData
           ? `url(${slotData.image.replace("./", "/")})`
@@ -21,6 +21,7 @@ const BanSlot: React.FC<BanSlotProps & { isRipple: boolean }> = ({
           : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        aspectRatio: "1 / 1"
       }}
     >
       {/* 대각선 선 */}
@@ -31,11 +32,11 @@ const BanSlot: React.FC<BanSlotProps & { isRipple: boolean }> = ({
         }}
       >
         <div
-          className="absolute w-[200%] h-[1px] bg-gray-500"
+          className="absolute w-[120%] h-[1px] bg-gray-500"
           style={{
             transform: "rotate(45deg)",
-            top: "50%",
-            left: "-50%",
+            top: "48%",
+            left: "-10%",
           }}
         ></div>
       </div>
