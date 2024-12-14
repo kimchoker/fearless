@@ -43,6 +43,8 @@ export default function LinksPage({ params }: { params: Promise<{ sessionId: str
   
         setBlueTeamPlayers([...bluePlayers]);
         setRedTeamPlayers([...redPlayers]);
+
+        
       }
     });
   
@@ -72,8 +74,8 @@ export default function LinksPage({ params }: { params: Promise<{ sessionId: str
     );
   };
 
-  const isAllReady = blueTeamPlayers.every((player) => player.nickname !== "대기 중") &&
-                     redTeamPlayers.every((player) => player.nickname !== "대기 중");
+  const isAllReady = blueTeamPlayers.every((player) => player.nickname !== "대기 중" && player.connected) &&
+                     redTeamPlayers.every((player) => player.nickname !== "대기 중" && player.connected) ;
 
   const handleStartBanPick = () => {
     if (isAllReady) {

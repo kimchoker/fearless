@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useState, useEffect } from "react";
-import champions from "../../../../public/champions.json";
+import champions from "../../../../../public/champions.json";
 import { phaseOrder } from "@/data/phase";
 import { Champion, PhaseTurn, PhaseType, Player } from "@/types/types";
 import BanSlot from "@/components/slots/BanSlot";
@@ -14,8 +14,8 @@ import database from "@/firebase/firebase";
 
 export default function BanpickUI({ params }: { params: Promise<{ sessionId: string; playerKey: string }> }) {
   const { sessionId, playerKey } = use(params); 
-  const [redTeamName, setRedTeamName] = useState("레드 팀");
-  const [blueTeamName, setBlueTeamName] = useState("블루 팀");
+  const [redTeamName, setRedTeamName] = useState("RED");
+  const [blueTeamName, setBlueTeamName] = useState("BLUE");
   const [redTeamMemberNames, setRedTeamMemberNames] = useState<string[]>(Array(5).fill("대기 중"));
   const [blueTeamMemberNames, setBlueTeamMemberNames] = useState<string[]>(Array(5).fill("대기 중"));
   const [currentPhase, setCurrentPhase] = useState<PhaseType>("ban1");
@@ -73,8 +73,8 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
         const data = snapshot.val();
         if (data) {
           // 팀 이름 가져오기
-          const blueTeamName = data.teams.blue?.name || "블루 팀";
-          const redTeamName = data.teams.red?.name || "레드 팀";
+          const blueTeamName = data.teams.blue?.name || "BLUE";
+          const redTeamName = data.teams.red?.name || "RED";
           setBlueTeamName(blueTeamName);
           setRedTeamName(redTeamName);
     
@@ -82,8 +82,8 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
           const blueTeamPlayers = Object.values(data.teams.blue?.players || {}) as Player[];
           const redTeamPlayers = Object.values(data.teams.red?.players || {}) as Player[];
     
-          const blueTeamMemberNames = blueTeamPlayers.map((player) => player.nickname || "대기 중");
-          const redTeamMemberNames = redTeamPlayers.map((player) => player.nickname || "대기 중");
+          const blueTeamMemberNames = blueTeamPlayers.map((player, index) => player.nickname || `player${index + 1}`);
+          const redTeamMemberNames = redTeamPlayers.map((player, index) => player.nickname || `player${index + 1}`);
     
           setBlueTeamMemberNames([...blueTeamMemberNames]);
           setRedTeamMemberNames([...redTeamMemberNames]);
@@ -344,8 +344,12 @@ export default function BanpickUI({ params }: { params: Promise<{ sessionId: str
             </div>
           </div>
 
-
+          
           {/* 중앙 이미지 */}
+          {
+
+
+          }
           <div className="w-3/5 flex flex-col items-center">
             <div className="flex justify-center items-center bg-gray-500 h-[90%] relative w-full">
               <Image
